@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ws页面</title>
+    <script src="/js/jquery-3.2.1.js"></script>
+</head>
+<body>
+<input type="button" value="连接" id="btnClick1"><br>
+<input type="text" id="msg"><input type="button" value="发送" id="btnClick2">
+</div>
+<div id="resultDiv"></div>
+<script>
+    var webSocket;
+
+    $("#btnClick2").click(function () {
+        var msg = $("#msg").val();
+        $("#resultDiv").append("<p>发送消息:" + msg+"</p>");
+        webSocket.send(msg)
+    });
+    $("#btnClick1").click(function () {
+        $("#resultDiv").append("<p>开始连接服务端!</p>");
+        webSocket = new WebSocket("ws://192.168.2.124:8080/myws");
+        webSocket.onerror = function (event) {
+            $("#resultDiv").append("<p>onerror:" + event.data + "</p>");
+        }
+        webSocket.onopen = function (event) {
+            $("#resultDiv").append("<p>连接成功！</p>");
+        }
+        webSocket.onmessage = function (event) {
+            $("#resultDiv").append("<p>onmessage:" + event.data + "</p>");
+        }
+    });
+
+</script>
+</body>
+</html>

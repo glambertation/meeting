@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.meeting.demo.dao.AppMenuMapper">
+  <resultMap id="BaseResultMap" type="org.meeting.demo.model.AppMenu">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="component" jdbcType="VARCHAR" property="component" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="iconCls" jdbcType="VARCHAR" property="iconcls" />
+    <result column="keepAlive" jdbcType="BIT" property="keepalive" />
+    <result column="requireAuth" jdbcType="BIT" property="requireauth" />
+    <result column="parentId" jdbcType="INTEGER" property="parentid" />
+    <result column="enabled" jdbcType="BIT" property="enabled" />
+  </resultMap>
+</mapper>
