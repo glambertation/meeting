@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.meeting.demo.model.AppUser;
 import org.meeting.demo.core.RespBean;
 import org.meeting.demo.service.AppUserService;
+import org.meeting.demo.service.impl.AppUserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @作者 江南一点雨
@@ -64,15 +67,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         auth.inMemoryAuthentication().withUser("zhangsan").password("$2a$10$2O4EwLrrFPEboTfDOtC0F.RpUMk.3q3KvBHRx7XXKUMLBGjOOBs8q").roles("user");
 
+
+        /*auth.inMemoryAuthentication().withUser("zhangsan").password("202cb962ac59075b964b07152d234b70").roles("user");*/
+
     }
+
+
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/css/**","/js/**","/index.html", "/templates/**", "/static/**","/msg.html","/img/**","/fonts/**","/favicon.ico","/verifyCode");
     }
 
-    @Override
+/*    @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.addFilterAt(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
@@ -101,6 +110,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureHandler(new AuthenticationFailureHandler() {
                     @Override
                     public void onAuthenticationFailure(HttpServletRequest req, HttpServletResponse resp, AuthenticationException exception) throws IOException, ServletException {
+                        System.out.println("req");
+                        System.out.println(req.toString());
+                        System.out.println("resp");
+                        System.out.println(resp.toString());
                         resp.setContentType("application/json;charset=utf-8");
                         PrintWriter out = resp.getWriter();
                         RespBean respBean = RespBean.error("登录失败!");
@@ -113,7 +126,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         } else if (exception instanceof DisabledException) {
                             respBean.setMsg("账户被禁用，请联系管理员!");
                         } else if (exception instanceof BadCredentialsException) {
-                            respBean.setMsg("用户名或者密码输入错误，请重新输入!");
+                            respBean.setMsg("用户名或者密码输入错误，请重新输入!记住啊");
                         }
                         out.write(new ObjectMapper().writeValueAsString(respBean));
                         out.flush();
@@ -152,5 +165,73 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 out.close();
             }
         });
+
+    }*/
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .and().csrf().disable();
+        http.addFilterAt(customAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+
+    @Bean
+    CustomAuthenticationFilter customAuthenticationFilter() throws Exception {
+        CustomAuthenticationFilter filter = new CustomAuthenticationFilter();
+        filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler() {
+            @Override
+            public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
+                /*resp.setContentType("application/json;charset=utf-8");
+                PrintWriter out = resp.getWriter();
+                RespBean respBean = RespBean.ok("登录成功!");
+                out.write(new ObjectMapper().writeValueAsString(respBean));*/
+
+                resp.setContentType("application/json;charset=utf-8");
+                PrintWriter out = resp.getWriter();
+                System.out.println("PrintWriter");
+                UserDetails app_user = (UserDetails) authentication.getPrincipal();
+                System.out.println("app_user");
+                System.out.println(app_user);
+                Map res = new HashMap();
+                res.put("id","1");
+                res.put("username","zhangsan");
+                res.put("password","");
+                res.put("avatar","https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png");
+                res.put("status",1);
+                res.put("telephone","");
+                res.put("lastLoginIp","27.154.74.117");
+                res.put("lastLoginTime","1534837621348");
+                res.put("creatorId","admin");
+                res.put("createTime","1497160610259");
+                res.put("deleted",0);
+                res.put("roleId","admin");
+                res.put("lang","zh-CN");
+                res.put("token","4291d7da9005377ec9aec4a71ea837f");
+
+
+
+                RespBean ok = RespBean.ok("登录成功!", res);
+                String s = new ObjectMapper().writeValueAsString(ok);
+                out.write(s);
+                out.flush();
+                out.close();
+            }
+        });
+        filter.setAuthenticationFailureHandler(new AuthenticationFailureHandler() {
+            @Override
+            public void onAuthenticationFailure(HttpServletRequest req, HttpServletResponse resp, AuthenticationException e) throws IOException, ServletException {
+                resp.setContentType("application/json;charset=utf-8");
+                PrintWriter out = resp.getWriter();
+                RespBean respBean = RespBean.error("登录失败!");
+                out.write(new ObjectMapper().writeValueAsString(respBean));
+                out.flush();
+                out.close();
+            }
+        });
+        filter.setAuthenticationManager(authenticationManagerBean());
+        return filter;
     }
 }

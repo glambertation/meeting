@@ -8,6 +8,8 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +17,7 @@ import java.util.Map;
 * Created by CodeGenerator on 2020/03/28.
 */
 @RestController
-@RequestMapping("/app/user")
+@RequestMapping("/app_user")
 public class AppUserController {
 @Resource
 private AppUserService appUserService;
@@ -42,6 +44,69 @@ return ResultGenerator.genSuccessResult();
 public Result detail(@RequestParam Integer id) {
 AppUser appUser = appUserService.findById(id);
 return ResultGenerator.genSuccessResult(appUser);
+}
+
+@GetMapping("/info")
+public Result info() {
+    Map userinfo = new HashMap();
+    userinfo.put("id", "4291d7da9005377ec9aec4a71ea837f");
+    userinfo.put("name", "天野远子");
+    userinfo.put("username", "admin");
+    userinfo.put("password", "");
+    userinfo.put("avatar", "/avatar2.jpg");
+    userinfo.put("status", 1);
+    userinfo.put("telephone", "");
+    userinfo.put("lastLoginIp", "27.154.74.117");
+    userinfo.put("lastLoginTime", "1534837621348");
+    userinfo.put("creatorId", "admin");
+    userinfo.put("createTime", "1497160610259");
+    userinfo.put("merchantCode", "TLif2btpzg079h15bk");
+    userinfo.put("deleted",0);
+    userinfo.put("roleId", "admin");
+
+    
+    Map role = new HashMap();
+    role.put("id", "admin");
+    role.put("name", "管理员");
+    role.put("describe", "拥有所有权限");
+    role.put("status", 1);
+    role.put("creatorId", "system");
+    role.put("createTime", "1497160610259");
+    role.put("deleted", 0);
+
+
+    List<Map> permissions = new ArrayList<Map>();
+    Map ig = new HashMap();
+    ig.put("roleId", "admin");
+    ig.put("permissionId", "dashboard");
+    ig.put("permissionName", "仪表盘");
+    List<Map> ig_action = new ArrayList<>();
+    Map i = new HashMap();
+    i.put("action","add");
+    ig_action.add(i);
+    ig.put("actions",ig_action);
+
+    List<Map> ig_action1 = new ArrayList<>();
+    Map i1 = new HashMap();
+    i1.put("action","add");
+    i1.put("describe","新增");
+    i1.put("defaultCheck", false);
+    ig_action1.add(i1);
+    ig.put("actionEntitySet",ig_action1);
+    ig.put("actionList",null);
+    ig.put("dataAccess",null);
+
+    permissions.add(ig);
+
+
+    role.put("permissions", permissions);
+
+
+
+    userinfo.put("role", role);
+
+
+    return ResultGenerator.genSuccessResult(userinfo);
 }
 
 @PostMapping("/list")
