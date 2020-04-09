@@ -66,6 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 内存里用两个账号
 
         auth.inMemoryAuthentication().withUser("zhangsan").password("$2a$10$2O4EwLrrFPEboTfDOtC0F.RpUMk.3q3KvBHRx7XXKUMLBGjOOBs8q").roles("user");
+        auth.inMemoryAuthentication().withUser("lisi").password("$2a$10$2O4EwLrrFPEboTfDOtC0F.RpUMk.3q3KvBHRx7XXKUMLBGjOOBs8q").roles("user");
 
 
         /*auth.inMemoryAuthentication().withUser("zhangsan").password("202cb962ac59075b964b07152d234b70").roles("user");*/
