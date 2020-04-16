@@ -65,6 +65,32 @@ public class helpController {
         return new ModelAndView("/user_watch", modelMap);
     }
 
+    // 多对多
+    @GetMapping("/meetings")
+    public ModelAndView meetings(ModelMap modelMap) {
+        /*AppUser user = appUserService.findBy("username","zhangsan");*/
+        String askid = "c0f71baa4f45459b818fea769c88bebc";
+        Map user = new HashMap<>();
+        user.put("username","zhangsan");
+        user.put("askid",askid);
+        modelMap.addAttribute("user", user);
+        return new ModelAndView("/user_meetings", modelMap);
+    }
+
+    // 修改后的多对多
+    @GetMapping("/mod")
+    public ModelAndView mod(ModelMap modelMap) {
+        /*AppUser user = appUserService.findBy("username","zhangsan");*/
+        String askid = "c0f71baa4f45459b818fea769c88bebc";
+        Map user = new HashMap<>();
+        user.put("username","zhangsan");
+        user.put("askid",askid);
+        modelMap.addAttribute("user", user);
+        System.out.println("mod");
+        return new ModelAndView("/user_meetings_mod", modelMap);
+    }
+
+
 
     /**
      * 直播页面
