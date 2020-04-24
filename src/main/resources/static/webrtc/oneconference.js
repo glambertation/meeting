@@ -13,6 +13,8 @@ var conference = function(config) {
     var isGetNewRoom = true;
     var sockets = [];
     var defaultSocket = { };
+    var selfleave = false;
+
 
     function openDefaultSocket(callback) {
         defaultSocket = config.openSocket({
@@ -43,6 +45,8 @@ var conference = function(config) {
         if (response.left && config.onRoomClosed) {
             console.log("owner离开");
             config.onRoomClosed(response);
+            config.onRoomEnded(response.roomToken);
+
         }
     }
 
@@ -178,10 +182,16 @@ var conference = function(config) {
 
             if (response.left) {
                 console.log("有人离开", response);
+                /*// to make sure room is unlisted if owner leaves
+                if (response.left && config.onRoomClosed) {
+                    console.log("owner离开");
+                    config.onRoomClosed(response);
+                }*/
+                console.log("有人离开", response);
                 console.log("有人离开 video", video);
                 console.log("有人离开 _config.stream", _config.stream);
-                if (config.onRemoteStreamEnded)
-                    config.onRemoteStreamEnded({
+                if (config.onRemoveStreamEnded)
+                    config.onRemoveStreamEnded({
                         video: video,
                         stream: _config.stream
                     });
@@ -192,6 +202,14 @@ var conference = function(config) {
                     peer.peer.close();
                     peer.peer = null;
                 }
+                // 重新初始化
+                self = {
+                    userToken: uniqueToken()
+                };
+                channels = '--', isbroadcaster;
+                isGetNewRoom = true;
+                sockets = [];
+                selfleave = false;
             }
         }
 
@@ -207,15 +225,38 @@ var conference = function(config) {
         }
     }
 
+
+
     async function leave() {
+        selfleave = true;
+        // 求助者自己离开 发广播通知
+        console.log("求助者自己离开 发广播通知");
+        defaultSocket && defaultSocket.send({
+            roomToken: self.roomToken,
+            leave: "leave"
+        });
+
+        // 接收者自己离开
+        console.log("leave config", config);
+        console.log("leave config channels", self.roomToken);
+        if (config.onRoomEnded)
+            config.onRoomEnded(self.roomToken);
+
+        // 删除自己页面video
+        console.log("自己离开 _config.stream");
+        if (config.onRemoveStreamEnded)
+            config.onRemoveStreamEnded();
+        console.log("自己离开");
 
         console.log("离开房间");
+        console.log("离开房间 sockets.length", sockets.length);
         var length = sockets.length;
         for (var i = 0; i < length; i++) {
-            var socket = sockets[i];
+            var socket = sockets[0];
             if (socket) {
                 console.log("send socket", socket);
                 console.log("config.attachStream", config.attachStream);
+                console.log("userToken", self.userToken);
                 socket.send({
                     left: true,
                     userToken: self.userToken,
@@ -246,13 +287,15 @@ var conference = function(config) {
             }
         }
         await sleep(3);
+
+        // 重新初始化
         self = {
             userToken: uniqueToken()
         };
-
         channels = '--', isbroadcaster;
         isGetNewRoom = true;
         sockets = [];
+        selfleave = false;
 
     }
 
@@ -269,18 +312,24 @@ var conference = function(config) {
         leave().then(r => console.log('leave'));
     }, false);
 
+    /*function beforeUnloadHandler(event){
+        leave().then(r => console.log("leave"));
+        event.returnValue = "要离开吗？";
+    }
+    window.addEventListener('beforeunload',beforeUnloadHandler,true);*/
+
     window.addEventListener('keyup', function (e) {
         if (e.keyCode == 116)
             leave();
     }, false);
 
     function startBroadcasting() {
-        defaultSocket && defaultSocket.send({
+        !selfleave && defaultSocket && defaultSocket.send({
             roomToken: self.roomToken,
             roomName: self.roomName,
             broadcaster: self.userToken
         });
-        setTimeout(startBroadcasting, 3000);
+        setTimeout(startBroadcasting, 30000);
     }
 
     function onNewParticipant(channel) {
@@ -316,12 +365,12 @@ var conference = function(config) {
             self.roomToken = uniqueToken();
 
             isbroadcaster = true;
-            isGetNewRoom = false;
+            isGetNewRoom = true;
             startBroadcasting();
         },
         joinRoom: function(_config) {
             self.roomToken = _config.roomToken;
-            isGetNewRoom = false;
+            isGetNewRoom = true;
 
             self.joinedARoom = true;
             self.broadcasterid = _config.joinUser;
@@ -337,7 +386,6 @@ var conference = function(config) {
                 }
             });
         },
-        leaveRoom: leave,
-
+        leaveRoom: leave
     };
 };
