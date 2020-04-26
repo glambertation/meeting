@@ -111,6 +111,7 @@ var RTCPeerConnection = function (options) {
     // onOfferSDP(RTCSessionDescription)
 
     function createOffer() {
+        console.log("在rtcpeerconnection里面， createoffer");
         if (!options.onOfferSDP) return;
 
         peer.createOffer(constraints).then(function(sessionDescription) {
@@ -124,6 +125,7 @@ var RTCPeerConnection = function (options) {
     // onAnswerSDP(RTCSessionDescription)
 
     function createAnswer() {
+        console.log("在rtcpeerconnection里面， creatanswer");
         if (!options.onAnswerSDP) return;
 
         //options.offerSDP.sdp = addStereo(options.offerSDP.sdp);

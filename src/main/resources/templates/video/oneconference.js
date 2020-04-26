@@ -29,13 +29,10 @@ var conference = function(config) {
     function onDefaultSocketResponse(response) {
         if (response.userToken == self.userToken) return;
 
-        // 收到新房间的广播
         if (isGetNewRoom && response.roomToken && response.broadcaster) config.onRoomFound(response);
 
-        // 收到别人加入我的广播
         if (response.newParticipant && self.joinedARoom && self.broadcasterid == response.userToken) onNewParticipant(response.newParticipant);
 
-        // 收到自己想加入别人的广播
         if (response.userToken && response.joinUser == self.userToken && response.participant && channels.indexOf(response.userToken) == -1) {
             channels += response.userToken + '--';
             openSubSocket({
@@ -46,7 +43,6 @@ var conference = function(config) {
 
         // to make sure room is unlisted if owner leaves
         if (response.left && config.onRoomClosed) {
-            console.log("owner离开");
             config.onRoomClosed(response);
             config.onRoomEnded(response.roomToken);
 
@@ -92,7 +88,6 @@ var conference = function(config) {
                 });
             },
             onRemoteStream: function(stream) {
-                console.log("onRemoteStream", stream);
                 if (!stream) return;
 
                 try {
@@ -111,7 +106,6 @@ var conference = function(config) {
                 onRemoteStreamStartsFlowing();
             },
             onRemoteStreamEnded: function(stream) {
-                console.log("onRemoteStreamEnded", onRemoteStreamEnded);
                 if (config.onRemoteStreamEnded)
                     config.onRemoteStreamEnded(stream, video);
             }
@@ -128,10 +122,7 @@ var conference = function(config) {
             peer = RTCPeerConnection(peerConfig);
         }
 
-
-
         function afterRemoteStreamStartedFlowing() {
-            console.log("afterRemoteStreamStartedFlowing", _config);
             gotstream = true;
 
             if (config.onRemoteStream)
@@ -152,12 +143,10 @@ var conference = function(config) {
         function onRemoteStreamStartsFlowing() {
             if(navigator.userAgent.match(/Android|iPhone|iPad|iPod|BlackBerry|IEMobile/i)) {
                 // if mobile device
-                console.log("onRemoteStreamStartsFlowing");
                 return afterRemoteStreamStartedFlowing();
             }
 
             if (!(video.readyState <= HTMLMediaElement.HAVE_CURRENT_DATA || video.paused || video.currentTime <= 0)) {
-                console.log("onRemoteStreamStartsFlowing2");
                 afterRemoteStreamStartedFlowing();
             } else setTimeout(onRemoteStreamStartsFlowing, 50);
         }
@@ -186,21 +175,13 @@ var conference = function(config) {
             }
 
             if (response.left) {
-                console.log("有人离开", response);
-                /*// to make sure room is unlisted if owner leaves
-                if (response.left && config.onRoomClosed) {
-                    console.log("owner离开");
-                    config.onRoomClosed(response);
-                }*/
-                console.log("有人离开", response);
-                console.log("有人离开 video", video);
-                console.log("有人离开 _config.stream", _config.stream);
+
                 if (config.onRemoveStreamEnded)
                     config.onRemoveStreamEnded({
                         video: video,
                         stream: _config.stream
                     });
-                console.log("有人离开", response);
+
                 if (peer && peer.peer) {
                     console.log("peer", peer);
                     console.log("peer.peer", peer.peer);
@@ -230,66 +211,28 @@ var conference = function(config) {
         }
     }
 
-    function refreshPeer(offerSDP) {
-        const constraints = {
-            optional: [],
-            mandatory: {
-                OfferToReceiveAudio: false,
-                OfferToReceiveVideo: false
-            }
-        };
 
-        if (!offerSDP) {
-            console.log("精彩：发offer");
-            peer.createOffer(constraints).then(function(sessionDescription) {
-                peer.setLocalDescription(sessionDescription).then(function() {
-                    sendsdp(sessionDescription);
-                    console.debug('offer-sdp', sessionDescription.sdp);
-                });
-            }).catch(onSdpError);
-        } else {
-            console.log("精彩：answer");
-            peer.setRemoteDescription(offerSDP).then(function() {
-                peer.createAnswer(constraints).then(function(sessionDescription) {
-                    peer.setLocalDescription(sessionDescription).then(function() {
-                        sendsdp(sessionDescription);
-                        console.debug('answer-sdp', sessionDescription.sdp);
-                    });
-                }).catch(onSdpError);
-            }).catch(onSdpError);
-        }
-    }
 
     async function leave() {
         selfleave = true;
         // 求助者自己离开 发广播通知
-        console.log("求助者自己离开 发广播通知");
         defaultSocket && defaultSocket.send({
             roomToken: self.roomToken,
             leave: "leave"
         });
 
         // 接收者自己离开
-        console.log("leave config", config);
-        console.log("leave config channels", self.roomToken);
         if (config.onRoomEnded)
             config.onRoomEnded(self.roomToken);
 
         // 删除自己页面video
-        console.log("自己离开 _config.stream");
         if (config.onRemoveStreamEnded)
             config.onRemoveStreamEnded();
-        console.log("自己离开");
 
-        console.log("离开房间");
-        console.log("离开房间 sockets.length", sockets.length);
         var length = sockets.length;
         for (var i = 0; i < length; i++) {
             var socket = sockets[0];
             if (socket) {
-                console.log("send socket", socket);
-                console.log("config.attachStream", config.attachStream);
-                console.log("userToken", self.userToken);
                 socket.send({
                     left: true,
                     userToken: self.userToken,
@@ -310,7 +253,6 @@ var conference = function(config) {
         await sleep(1);
 
         if (config.attachStream) {
-            console.log("stop attach", config)
             if ('stop' in config.attachStream) {
                 config.attachStream.stop();
             } else {
@@ -345,11 +287,6 @@ var conference = function(config) {
         leave().then(r => console.log('leave'));
     }, false);
 
-    /*function beforeUnloadHandler(event){
-        leave().then(r => console.log("leave"));
-        event.returnValue = "要离开吗？";
-    }
-    window.addEventListener('beforeunload',beforeUnloadHandler,true);*/
 
     window.addEventListener('keyup', function (e) {
         if (e.keyCode == 116)
@@ -393,7 +330,6 @@ var conference = function(config) {
 
     return {
         createRoom: function(_config) {
-            console.log("_config", _config)
             self.roomName = _config.roomName || '随机会议室';
             self.roomToken = uniqueToken();
 
@@ -419,9 +355,6 @@ var conference = function(config) {
                 }
             });
         },
-        leaveRoom: leave,
-        refresh: function(_config) {
-            refreshPeer(_config.sdp);
-        }
+        leaveRoom: leave
     };
 };

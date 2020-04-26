@@ -115,8 +115,10 @@
 
         </section>
         <button id="leave-room"  hidden="hidden">挂断</button>
-        <input type="text" id="jingyin" placeholder="会议室名称" style="width: 50%;">
-        <button id="mutehandler" class="setup">mutehandler</button>
+        <input type="text" id="jingyina" placeholder="会议室名称" style="width: 50%;">
+        <button id="jingyin" class="setup">静音</button>
+        <input type="text" id="huifua" placeholder="会议室名称" style="width: 50%;">
+        <button id="huifu" class="setup">恢复</button>
 
         <!-- list of all available conferencing rooms -->
         <table style="width: 100%;" id="rooms-list"></table>
@@ -312,6 +314,53 @@
 
         }
 
+        function jingyinHandler() {
+            console.log("进入静音handle");
+            config.attachStream.getTracks().forEach(function (track) {
+                track.enabled = true;
+                console.log("track.readyState", track.readyState);
+                console.log("track.muted", track.muted);
+                console.log("track.id", track.id);
+                console.log("track.kind", track.kind);
+                console.log("track.label", track.label);
+                console.log("track.readonly", track.readonly);
+                console.log("track.remote", track.remote);
+            });
+            /*conferenceUI.refresh();*/
+            /*
+            config.attachStream.getTracks().forEach(function (track) {
+                track.stop();
+                console.log("track",track);
+            });
+            console.log("静音");*/
+
+            /*setTimeout(function(){
+                window.location.href="about:blank";
+                window.close();
+            }, 3000);*/
+
+        }
+
+        function huifuHandler() {
+            console.log("进入恢复handle");
+            config.attachStream.getTracks().forEach(function (track) {
+                track.enabled = false;
+                track.muted = true;
+                console.log("track.readyState", track.readyState);
+                /*
+
+                track.stop();*/
+                console.log("track",track);
+            });
+            console.log("静音");
+
+            /*setTimeout(function(){
+                window.location.href="about:blank";
+                window.close();
+            }, 3000);*/
+
+        }
+
 
 
 
@@ -360,11 +409,17 @@
         var btnSetupNewRoom = document.getElementById('setup-new-room');
         var btnLeaveRoom = document.getElementById('leave-room');
         var roomsList = document.getElementById('rooms-list');
+        var jingyin = document.getElementById('jingyin');
+        var huifu = document.getElementById('huifu');
         document.getElementById('room_url').innerHTML=location.href;
 
         if (btnSetupNewRoom) btnSetupNewRoom.onclick = setupNewRoomButtonClickHandler;
 
         if (btnLeaveRoom) btnLeaveRoom.onclick = LeaveRoomButtonClickHandler;
+
+        if (jingyin) jingyin.onclick = jingyinHandler;
+
+        if (huifu) huifu.onclick = huifuHandler;
 
 
         function rotateVideo(video) {

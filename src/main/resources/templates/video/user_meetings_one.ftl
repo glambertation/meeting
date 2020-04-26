@@ -26,7 +26,8 @@
     <meta name="description" content="Video Conferencing using WebRTC." />
     <meta name="keywords" content="WebRTC, Video Conferencing, Demo, Example, Experiment" />-->
 
-    <link rel="stylesheet" href="https://www.webrtc-experiment.com/style.css">
+    <#--<link rel="stylesheet" href="https://www.webrtc-experiment.com/style.css">-->
+    <link rel="stylesheet" href="../webrtc/style.css">
 
     <style>
         audio, video {
@@ -71,23 +72,29 @@
     </script>
 
     <!-- script used to stylize video element -->
-    <script src="https://www.webrtc-experiment.com/getMediaElement.min.js"> </script>
+    <#--<script src="https://www.webrtc-experiment.com/getMediaElement.min.js"> </script>
 
     <script src="https://www.webrtc-experiment.com/socket.io.js"> </script>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="https://www.webrtc-experiment.com/IceServersHandler.js"></script>
-    <script src="https://www.webrtc-experiment.com/CodecsHandler.js"></script>
+    <script src="https://www.webrtc-experiment.com/CodecsHandler.js"></script>-->
     <#--<script src="https://www.webrtc-experiment.com/RTCPeerConnection-v1.5.js"> </script>-->
    <#-- <script src="https://www.webrtc-experiment.com/video-conferencing/conference.js"> </script>-->
-    <script src="../webrtc/conference.js"> </script>
+    <script src="../webrtc/getMediaElement.min.js"> </script>
+    <script src="../webrtc/socket.io.js"> </script>
+    <script src="../webrtc/adapter-latest.js"></script>
+    <script src="../webrtc/IceServersHandler.js"></script>
+    <script src="../webrtc/CodecsHandler.js"></script>
     <script src="../webrtc/RTCPeerConnection-v1.5.js"> </script>
+    <script src="../webrtc/oneconference.js"> </script>
+
 </head>
 
 <body>
 <article>
     <header style="text-align: center;">
         <h1>
-            紧急会议
+            1v1通话
         </h1>
 
     </header>
@@ -107,10 +114,10 @@
             <button id="setup-new-room" class="setup">新建会议室</button>
 
         </section>
-        <button id="leave-room"  hidden="hidden">离开会议室</button>
-        <input type="text" id="jingyina" placeholder="会议室名称" style="width: 50%;">
+        <button id="leave-room"  hidden="hidden">挂断</button>
+        <input type="text" id="jingyin" placeholder="会议室名称" style="width: 50%;">
         <button id="jingyin" class="setup">静音</button>
-        <input type="text" id="huifua" placeholder="会议室名称" style="width: 50%;">
+        <input type="text" id="huifu" placeholder="会议室名称" style="width: 50%;">
         <button id="huifu" class="setup">恢复</button>
 
         <!-- list of all available conferencing rooms -->
@@ -135,10 +142,10 @@
                 var SIGNALING_SERVER = 'https://localhost:9559/';
 
 
-                config.channel = config.channel || location.href.replace(/\/|:|#|%|\.|\[|\]/g, '');
+                /*config.channel = config.channel || location.href.replace(/\/|:|#|%|\.|\[|\]/g, '');*/
+                config.channel = config.channel || "zhebushimeng";
                 var sender = Math.round(Math.random() * 999999999) + 999999999;
-                console.log("config.channel", config.channel);
-                console.log("sender", sender);
+
 
                 io.connect(SIGNALING_SERVER).emit('new-channel', {
                     channel: config.channel,
@@ -165,32 +172,49 @@
                     width: (videosContainer.clientWidth / 2) - 50,
                     buttons: ['full-screen', 'volume-slider']
                 });
-                console.log("media", media);
                 mediaElement.id = media.stream.id;
-                console.log("开视频 append node")
                 videosContainer.appendChild(mediaElement);
             },
             onRemoteStreamEnded: function(stream, video) {
-                console.log("离开视频 清除node stream", stream);
-                console.log("离开视频 清除node", video);
                 if (video.parentNode && video.parentNode.parentNode && video.parentNode.parentNode.parentNode) {
-                    console.log("离开视频 清除node")
                     video.parentNode.parentNode.parentNode.removeChild(video.parentNode.parentNode);
                 }
             },
+            onRemoveStreamEnded: function(stream, video) {
+                var videos = document.getElementsByTagName("video");
+                var len= videos.length;
+                for (var i = 0; i < len; i++) {
+                    var videos = document.getElementsByTagName("video");
+                    if (videos[0].parentNode && videos[0].parentNode.parentNode && videos[0].parentNode.parentNode.parentNode) {
+                        videos[0].parentNode.parentNode.parentNode.removeChild(videos[0].parentNode.parentNode);
+                    }
+                }
+            },
+            onRoomEnded: function(roomToken) {
+
+                if(roomToken){
+                    var alreadyExist = document.querySelector('button[data-roomtoken="' + roomToken + '"]');
+                    if(alreadyExist)
+                        alreadyExist.parentNode.parentNode.parentNode.removeChild(alreadyExist.parentNode.parentNode);
+                }
+            },
             onRoomFound: function(room) {
-                console.log(room)
+                if(!room.broadcaster){
+                    var alreadyExist = document.querySelector('button[data-roomtoken="' + roomtoken + '"]');
+                    alreadyExist.remove();
+                    return;
+                }
                 var alreadyExist = document.querySelector('button[data-broadcaster="' + room.broadcaster + '"]');
                 if (alreadyExist) return;
-                if (!alreadyExist) {
+                /*if (!alreadyExist) {
                     document.getElementById('conference-name').remove();
                     btnSetupNewRoom.remove();
-                }
+                }*/
                 if (typeof roomsList === 'undefined') roomsList = document.body;
 
                 var tr = document.createElement('tr');
-                tr.innerHTML = '<td><strong>' + room.roomName + '</strong> 邀请你加入会议!</td>' +
-                    '<td><button class="join">加入</button></td>';
+                tr.innerHTML = '<td><strong>' + room.roomName + '</strong> 发起求助电话!</td>' +
+                    '<td><button class="join">接通</button></td>';
                 roomsList.appendChild(tr);
 
                 var joinRoomButton = tr.querySelector('.join');
@@ -206,7 +230,7 @@
                             roomToken: roomToken,
                             joinUser: broadcaster
                         });
-                        document.getElementById('rooms-list').remove();
+                        /*document.getElementById('rooms-list').remove();*/
                         /*btnLeaveRoom.removeAttribute("hidden");*/
                     }, function() {
                         joinRoomButton.disabled = false;
@@ -215,16 +239,11 @@
                 };
             },
             onRoomClosed: function(room) {
-                console.log("room close");
                 var joinButton = document.querySelector('button[data-roomToken="' + room.roomToken + '"]');
                 if (joinButton) {
-                    // joinButton.parentNode === <li>
-                    // joinButton.parentNode.parentNode === <td>
-                    // joinButton.parentNode.parentNode.parentNode === <tr>
-                    // joinButton.parentNode.parentNode.parentNode.parentNode === <table>
-                    console.log("remove video node", joinButton.parentNode.parentNode.parentNode)
-                    joinButton.parentNode.parentNode.parentNode.parentNode.removeChild(joinButton.parentNode.parentNode.parentNode);
+                    joinButton.parentNode.parentNode.parentNode.removeChild(joinButton.parentNode.parentNode);
                 }
+
             },
             onReady: function() {
                 console.log('now you can open or join rooms');
@@ -238,10 +257,8 @@
                 conferenceUI.createRoom({
                     roomName: (document.getElementById('conference-name') || { }).value || '紧急会议'
                 });
-                console.log("召开紧急会议")
                 document.getElementById('conference-name').remove();
                 btnSetupNewRoom.remove();
-                /*btnLeaveRoom.removeAttribute("hidden");*/
             }, function() {
                 btnSetupNewRoom.disabled = document.getElementById('conference-name').disabled = false;
             });
@@ -249,65 +266,11 @@
 
         function LeaveRoomButtonClickHandler() {
             conferenceUI.leaveRoom()
-            console.log("离开房间");
-
-            /*setTimeout(function(){
-                window.location.href="about:blank";
-                window.close();
-            }, 3000);*/
-
         }
 
-        function jingyinHandler() {
-            console.log("进入静音handle");
-            config.attachStream.getTracks().forEach(function (track) {
-                track.enabled = true;
-                track.muted = false;
-                console.log("track.readyState", track.readyState);
-                console.log("track.muted", track.muted);
-                console.log("track.id", track.id);
-                console.log("track.kind", track.kind);
-                console.log("track.label", track.label);
-                console.log("track.readonly", track.readonly);
-                console.log("track.remote", track.remote);
-            });
-            /*conferenceUI.refresh();*/
-            /*
-            config.attachStream.getTracks().forEach(function (track) {
-                track.stop();
-                console.log("track",track);
-            });
-            console.log("静音");*/
 
-            /*setTimeout(function(){
-                window.location.href="about:blank";
-                window.close();
-            }, 3000);*/
 
-        }
-
-        function huifuHandler() {
-            console.log("进入恢复handle");
-            config.attachStream.getTracks().forEach(function (track) {
-                console.log("track",track);
-                track.muted = true;
-                track.enabled = false;
-                console.log("track.readyState", track.readyState);
-                console.log("track",track);
-                /*
-
-                track.stop();*/
-
-            });
-            console.log("静音");
-
-            /*setTimeout(function(){
-                window.location.href="about:blank";
-                window.close();
-            }, 3000);*/
-
-        }
-
+        // 原代码处理
         function captureUserMedia(callback, failure_callback) {
             var video = document.createElement('video');
             video.muted = true;
@@ -352,17 +315,14 @@
         var btnSetupNewRoom = document.getElementById('setup-new-room');
         var btnLeaveRoom = document.getElementById('leave-room');
         var roomsList = document.getElementById('rooms-list');
-        var jingyin = document.getElementById('jingyin');
-        var huifu = document.getElementById('huifu');
+
         document.getElementById('room_url').innerHTML=location.href;
 
         if (btnSetupNewRoom) btnSetupNewRoom.onclick = setupNewRoomButtonClickHandler;
 
         if (btnLeaveRoom) btnLeaveRoom.onclick = LeaveRoomButtonClickHandler;
 
-        if (jingyin) jingyin.onclick = jingyinHandler;
 
-        if (huifu) huifu.onclick = huifuHandler;
 
         function rotateVideo(video) {
             video.style[navigator.mozGetUserMedia ? 'transform' : '-webkit-transform'] = 'rotate(0deg)';
@@ -416,6 +376,7 @@
 
 
 <!-- commits.js is useless for you! -->
-<script src="https://www.webrtc-experiment.com/commits.js" async> </script>
+<#--<script src="https://www.webrtc-experiment.com/commits.js" async> </script>-->
+    <script src="../webrtc/commits.js" async> </script>
 </body>
 </html>
