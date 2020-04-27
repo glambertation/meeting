@@ -198,6 +198,15 @@
                         alreadyExist.parentNode.parentNode.parentNode.removeChild(alreadyExist.parentNode.parentNode);
                 }
             },
+            onTest: function(roomToken) {
+
+                if(roomToken){
+                    var alreadyExist = document.querySelector('button[data-roomtoken="' + roomToken + '"]');
+                    if(alreadyExist)
+                        alreadyExist.parentNode.parentNode.parentNode.removeChild(alreadyExist.parentNode.parentNode);
+                }
+            },
+
             onRoomFound: function(room) {
                 if(!room.broadcaster){
                     var alreadyExist = document.querySelector('button[data-roomtoken="' + roomtoken + '"]');

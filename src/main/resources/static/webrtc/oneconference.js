@@ -14,6 +14,7 @@ var conference = function(config) {
     var sockets = [];
     var defaultSocket = { };
     var selfleave = false;
+    var selfPause = false;
 
 
     function openDefaultSocket(callback) {
@@ -216,6 +217,39 @@ var conference = function(config) {
                 sockets = [];
                 selfleave = false;
             }
+
+            // 暂停通话
+            if (response.selfPause) {
+                console.log("有人暂时离开", response);
+                /*// to make sure room is unlisted if owner leaves
+                if (response.left && config.onRoomClosed) {
+                    console.log("owner离开");
+                    config.onRoomClosed(response);
+                }*/
+                console.log("有人暂时离开", response);
+                console.log("有人暂时离开 video", video);
+                console.log("有人暂时离开 _config.stream", _config.stream);
+                if (config.onRemoveStreamPause)
+                    config.onRemoveStreamPause({
+                        video: video,
+                        stream: _config.stream
+                    });
+                console.log("有人暂时离开", response);
+                if (peer && peer.peer) {
+                    console.log("peer", peer);
+                    console.log("peer.peer", peer.peer);
+                    peer.peer.close();
+                    peer.peer = null;
+                }
+                /*// 重新初始化
+                self = {
+                    userToken: uniqueToken()
+                };
+                channels = '--', isbroadcaster;
+                isGetNewRoom = true;
+                sockets = [];
+                selfleave = false;*/
+            }
         }
 
         var invokedOnce = false;
@@ -258,6 +292,76 @@ var conference = function(config) {
                 }).catch(onSdpError);
             }).catch(onSdpError);
         }
+    }
+
+    async function leavepause() {
+        selfPause = true;
+
+
+        // 接收者自己离开,接通按钮恢复正常
+        console.log("pause config", config);
+        console.log("pause config channels", self.roomToken);
+        if (config.onRoomPause){
+            console.log("进入onRoomPause");
+            config.onRoomPause(self.roomToken);
+        }
+
+
+        // 删除自己页面video
+        console.log("自己离开 _config.stream");
+        if (config.onRemoveStreamEnded)
+            config.onRemoveStreamEnded();
+        console.log("自己离开");
+
+        console.log("离开房间");
+        console.log("离开房间 sockets.length", sockets.length);
+        var length = sockets.length;
+        for (var i = 0; i < length; i++) {
+            var socket = sockets[0];
+            if (socket) {
+                console.log("send socket", socket);
+                console.log("config.attachStream", config.attachStream);
+                console.log("userToken", self.userToken);
+                socket.send({
+                    selfPause: true,
+                    userToken: self.userToken,
+                    attachStream: config.attachStream
+                });
+                delete sockets[i];
+            }
+        }
+
+        // if owner leaves; try to remove his room from all other users side
+        if (isbroadcaster) {
+            defaultSocket.send({
+                left: true,
+                userToken: self.userToken,
+                roomToken: self.roomToken
+            });
+        }
+        await sleep(1);
+
+        if (config.attachStream) {
+            console.log("stop attach", config)
+            if ('stop' in config.attachStream) {
+                config.attachStream.stop();
+            } else {
+                config.attachStream.getTracks().forEach(function (track) {
+                    track.stop();
+                });
+            }
+        }
+        await sleep(3);
+
+        // 重新初始化
+        self = {
+            userToken: uniqueToken()
+        };
+        channels = '--', isbroadcaster;
+        isGetNewRoom = true;
+        sockets = [];
+        selfleave = false;
+
     }
 
     async function leave() {
@@ -420,6 +524,7 @@ var conference = function(config) {
             });
         },
         leaveRoom: leave,
+        leavePause: leavepause,
         refresh: function(_config) {
             refreshPeer(_config.sdp);
         }

@@ -197,6 +197,19 @@
                 }
                 console.log("离开视频 清除node i end");
             },
+            onRemoveStreamPause: function(stream, video) {
+                var videos = document.getElementsByTagName("video");
+                var len= videos.length;
+                console.log("videos.length;", videos.length);
+                if(len>1){
+                    console.log("离开视频 清除node remove", videos[1].parentNode.parentNode);
+                    if (videos[1].parentNode && videos[1].parentNode.parentNode && videos[1].parentNode.parentNode.parentNode) {
+                        console.log("离开视频 清除node")
+                        videos[1].parentNode.parentNode.parentNode.removeChild(videos[1].parentNode.parentNode);
+                    }
+                }
+                console.log("离开视频 清除node i end");
+            },
             onRoomEnded: function(roomToken) {
                 /*var alreadyExist = document.querySelector('button[data-roomtoken="' + roomtoken + '"]');
                 alreadyExist.remove();*/
@@ -207,6 +220,14 @@
                     if(alreadyExist)
                         alreadyExist.remove();
                     console.log("离开视频 清除node i end");
+                }
+            },
+            onRoomPause: function(roomToken) {
+
+                if(roomToken){
+                    var alreadyExist = document.querySelector('button[data-roomtoken="' + roomToken + '"]');
+                    if(alreadyExist)
+                        alreadyExist.disabled = false;
                 }
             },
             onRoomFound: function(room) {

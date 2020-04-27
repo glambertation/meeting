@@ -114,11 +114,14 @@
             <button id="setup-new-room" class="setup">新建会议室</button>
 
         </section>
-        <button id="leave-room"  hidden="hidden">挂断</button>
+        <input type="text" id="guaduan" placeholder="会议室名称" style="width: 50%;">
+        <button id="leave-room" class="setup">挂断</button>
         <input type="text" id="jingyina" placeholder="会议室名称" style="width: 50%;">
         <button id="jingyin" class="setup">静音</button>
         <input type="text" id="huifua" placeholder="会议室名称" style="width: 50%;">
-        <button id="huifu" class="setup">恢复</button>
+        <button id="huifu" class="setup">取消静音</button>
+        <input type="text" id="zantinga" placeholder="会议室名称" style="width: 50%;">
+        <button id="zanting" class="setup">暂停</button>
 
         <!-- list of all available conferencing rooms -->
         <table style="width: 100%;" id="rooms-list"></table>
@@ -202,6 +205,19 @@
                 }
                 console.log("离开视频 清除node i end");
             },
+            onRemoveStreamPause: function(stream, video) {
+                var videos = document.getElementsByTagName("video");
+                var len= videos.length;
+                if(len>1){
+                    console.log("离开视频 清除node remove", videos[1].parentNode.parentNode);
+                    if (videos[1].parentNode && videos[1].parentNode.parentNode && videos[1].parentNode.parentNode.parentNode) {
+                        console.log("离开视频 清除node")
+                        videos[1].parentNode.parentNode.parentNode.removeChild(videos[1].parentNode.parentNode);
+                    }
+                }
+                console.log("videos.length;", videos.length);
+                console.log("离开视频 清除node i end");
+            },
             onRoomEnded: function(roomToken) {
                 /*var alreadyExist = document.querySelector('button[data-roomtoken="' + roomtoken + '"]');
                 alreadyExist.remove();*/
@@ -212,6 +228,14 @@
                     if(alreadyExist)
                         alreadyExist.parentNode.parentNode.parentNode.removeChild(alreadyExist.parentNode.parentNode);
                     console.log("离开视频 清除node i end");
+                }
+            },
+            onRoomPause: function(roomToken) {
+
+                if(roomToken){
+                    var alreadyExist = document.querySelector('button[data-roomtoken="' + roomToken + '"]');
+                    if(alreadyExist)
+                        alreadyExist.disabled = false;
                 }
             },
             onRoomFound: function(room) {
@@ -313,9 +337,30 @@
             }, 3000);*/
 
         }
+        function zantingHandler() {
+            console.log("进入暂停handle");
+
+            conferenceUI.leavePause();
+
+
+        }
 
         function jingyinHandler() {
             console.log("进入静音handle");
+            config.attachStream.getTracks().forEach(function (track) {
+                console.log("track",track);
+                track.enabled = false;
+                track.muted = true;
+                console.log("track.readyState", track.readyState);
+                console.log("track",track);
+            });
+            console.log("静音");
+
+
+        }
+
+        function huifuHandler() {
+            console.log("进入恢复handle");
             config.attachStream.getTracks().forEach(function (track) {
                 track.enabled = true;
                 console.log("track.readyState", track.readyState);
@@ -325,40 +370,8 @@
                 console.log("track.label", track.label);
                 console.log("track.readonly", track.readonly);
                 console.log("track.remote", track.remote);
+                console.log("track.getSettings", track.getSettings());
             });
-            /*conferenceUI.refresh();*/
-            /*
-            config.attachStream.getTracks().forEach(function (track) {
-                track.stop();
-                console.log("track",track);
-            });
-            console.log("静音");*/
-
-            /*setTimeout(function(){
-                window.location.href="about:blank";
-                window.close();
-            }, 3000);*/
-
-        }
-
-        function huifuHandler() {
-            console.log("进入恢复handle");
-            config.attachStream.getTracks().forEach(function (track) {
-                track.enabled = false;
-                track.muted = true;
-                console.log("track.readyState", track.readyState);
-                /*
-
-                track.stop();*/
-                console.log("track",track);
-            });
-            console.log("静音");
-
-            /*setTimeout(function(){
-                window.location.href="about:blank";
-                window.close();
-            }, 3000);*/
-
         }
 
 
@@ -411,6 +424,7 @@
         var roomsList = document.getElementById('rooms-list');
         var jingyin = document.getElementById('jingyin');
         var huifu = document.getElementById('huifu');
+        var zanting = document.getElementById('zanting');
         document.getElementById('room_url').innerHTML=location.href;
 
         if (btnSetupNewRoom) btnSetupNewRoom.onclick = setupNewRoomButtonClickHandler;
@@ -420,6 +434,8 @@
         if (jingyin) jingyin.onclick = jingyinHandler;
 
         if (huifu) huifu.onclick = huifuHandler;
+
+        if (zanting) zanting.onclick = zantingHandler;
 
 
         function rotateVideo(video) {
