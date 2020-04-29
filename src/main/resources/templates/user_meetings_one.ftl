@@ -81,12 +81,18 @@
     <#--<script src="https://www.webrtc-experiment.com/RTCPeerConnection-v1.5.js"> </script>-->
    <#-- <script src="https://www.webrtc-experiment.com/video-conferencing/conference.js"> </script>-->
     <script src="../webrtc/getMediaElement.min.js"> </script>
-    <script src="../webrtc/socket.io.js"> </script>
+    <script src="https://localhost:9559/socket.io/socket.io.js"></script>
+    <#--<script src="../webrtc/socket.io.js"> </script>-->
     <script src="../webrtc/adapter-latest.js"></script>
     <script src="../webrtc/IceServersHandler.js"></script>
     <script src="../webrtc/CodecsHandler.js"></script>
     <script src="../webrtc/RTCPeerConnection-v1.5.js"> </script>
     <script src="../webrtc/oneconference.js"> </script>
+
+    <#--rabbitmq-->
+    <script src="../sockjs.min.js"> </script>
+    <script src="../stomp.js"> </script>
+    <script src="../jquery-3.1.1.js"> </script>
 
 </head>
 
@@ -119,7 +125,7 @@
         <input type="text" id="jingyina" placeholder="会议室名称" style="width: 50%;">
         <button id="jingyin" class="setup">静音</button>
         <input type="text" id="huifua" placeholder="会议室名称" style="width: 50%;">
-        <button id="huifu" class="setup">取消静音</button>
+        <button id="huifu" class="setup">恢复</button>
         <input type="text" id="zantinga" placeholder="会议室名称" style="width: 50%;">
         <button id="zanting" class="setup">暂停</button>
 
@@ -150,6 +156,7 @@
                 var sender = Math.round(Math.random() * 999999999) + 999999999;
                 console.log("config.channel", config.channel);
                 console.log("sender", sender);
+                console.lo
 
                 io.connect(SIGNALING_SERVER).emit('new-channel', {
                     channel: config.channel,
@@ -264,6 +271,8 @@
                 joinRoomButton.setAttribute('data-broadcaster', room.broadcaster);
                 joinRoomButton.setAttribute('data-roomToken', room.roomToken);
                 joinRoomButton.onclick = function() {
+                    config.joinroomToken = room.roomToken;
+                    stomp.send("/chat",{},"admin_join"+room.roomToken);
                     this.disabled = true;
 
                     var broadcaster = this.getAttribute('data-broadcaster');
@@ -311,7 +320,26 @@
             }
         };
 
+        /*rabbitmq*/
+        var sock = new SockJS("/endpointChat");
+        var stomp = Stomp.over(sock);
+        //    连接WebSocket服务端
+        stomp.connect('guest','guest',function (frame) {
+//        订阅/user/queue/notifications发送的消息，这里与在控制器的messagingTemplate.convertAndSendToUser中定义的订阅地址保持一致。
+//        这里多了一个/user，并且这个user是必须的，使用了/user才会发送消息到指定的用户
+            stomp.subscribe("/user/queue/notifications",handleNotification);/*
+        stomp.subscribe("/topic",handleNotification);*/
+            stomp.subscribe("/queue/direct", function(data) {
+                var msg = data.body;
+                alert("收到数据：" + msg);
+            });
+        });
+        function handleNotification(message) {
+            $('#output').append("<b>收到了:" + message.body + "</b><br/>")
+        }
+
         function setupNewRoomButtonClickHandler() {
+            stomp.send("/chat",{},"createroom"+config.channel);
             btnSetupNewRoom.disabled = true;
             document.getElementById('conference-name').disabled = true;
             captureUserMedia(function() {
@@ -328,6 +356,7 @@
         }
 
         function LeaveRoomButtonClickHandler() {
+            stomp.send("/chat",{},"admin_hangup"+config.joinroomToken);
             conferenceUI.leaveRoom()
             console.log("离开房间");
 
@@ -338,6 +367,8 @@
 
         }
         function zantingHandler() {
+            console.log("config pause msg", config.joinroomToken);
+            stomp.send("/chat",{},"admin_pause"+config.joinroomToken);
             console.log("进入暂停handle");
 
             conferenceUI.leavePause();
@@ -346,6 +377,7 @@
         }
 
         function jingyinHandler() {
+            stomp.send("/chat",{},"admin_mute"+config.joinroomToken);
             console.log("进入静音handle");
             config.attachStream.getTracks().forEach(function (track) {
                 console.log("track",track);
@@ -360,6 +392,7 @@
         }
 
         function huifuHandler() {
+            stomp.send("/chat",{},"admin_unmute"+config.joinroomToken);
             console.log("进入恢复handle");
             config.attachStream.getTracks().forEach(function (track) {
                 track.enabled = true;

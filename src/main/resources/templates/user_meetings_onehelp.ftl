@@ -81,12 +81,18 @@
     <#--<script src="https://www.webrtc-experiment.com/RTCPeerConnection-v1.5.js"> </script>-->
     <#-- <script src="https://www.webrtc-experiment.com/video-conferencing/conference.js"> </script>-->
     <script src="../webrtc/getMediaElement.min.js"> </script>
-    <script src="../webrtc/socket.io.js"> </script>
+    <script src="https://localhost:9559/socket.io/socket.io.js"></script>
+    <#--<script src="../webrtc/socket.io.js"> </script>-->
     <script src="../webrtc/adapter-latest.js"></script>
     <script src="../webrtc/IceServersHandler.js"></script>
     <script src="../webrtc/CodecsHandler.js"></script>
     <script src="../webrtc/RTCPeerConnection-v1.5.js"> </script>
     <script src="../webrtc/oneconference.js"> </script>
+
+    <#--rabbitmq-->
+    <script src="../sockjs.min.js"> </script>
+    <script src="../stomp.js"> </script>
+    <script src="../jquery-3.1.1.js"> </script>
 </head>
 
 <body>
@@ -287,13 +293,33 @@
             }
         };
 
+        /*rabbitmq*/
+        var sock = new SockJS("/endpointChat");
+        var stomp = Stomp.over(sock);
+        //    连接WebSocket服务端
+        stomp.connect('guest','guest',function (frame) {
+//        订阅/user/queue/notifications发送的消息，这里与在控制器的messagingTemplate.convertAndSendToUser中定义的订阅地址保持一致。
+//        这里多了一个/user，并且这个user是必须的，使用了/user才会发送消息到指定的用户
+            stomp.subscribe("/user/queue/notifications",handleNotification);/*
+        stomp.subscribe("/topic",handleNotification);*/
+            stomp.subscribe("/queue/direct", function(data) {
+                var msg = data.body;
+                alert("收到数据：" + msg);
+            });
+        });
+        function handleNotification(message) {
+            $('#output').append("<b>收到了:" + message.body + "</b><br/>")
+        }
+
         function setupNewRoomButtonClickHandler() {
+
             btnSetupNewRoom.disabled = true;
             /*document.getElementById('conference-name').disabled = true;*/
             captureUserMedia(function() {
                 conferenceUI.createRoom({
                     roomName: (document.getElementById('conference-name') || { }).value || '紧急会议'
                 });
+                stomp.send("/chat",{},"user_createroom"+config.joinroomToken);
                 console.log("召开紧急会议")
                 document.getElementById('conference-name').remove();
                 btnSetupNewRoom.remove();
@@ -304,6 +330,7 @@
         }
 
         function LeaveRoomButtonClickHandler() {
+            stomp.send("/chat",{},"user_hangup"+config.joinroomToken);
             conferenceUI.leaveRoom()
             console.log("离开房间");
 

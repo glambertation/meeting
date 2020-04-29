@@ -314,6 +314,7 @@ var conference = function(config) {
             console.log("_config", _config)
             self.roomName = _config.roomName || '随机会议室';
             self.roomToken = uniqueToken();
+            config.joinroomToken = self.roomToken;
 
             isbroadcaster = true;
             isGetNewRoom = false;

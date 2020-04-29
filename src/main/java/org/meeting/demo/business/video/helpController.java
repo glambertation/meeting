@@ -116,6 +116,32 @@ public class helpController {
         return new ModelAndView("/user_meetings_onehelp", modelMap);
     }
 
+    // chat
+    @GetMapping("/chat")
+    public ModelAndView chatpage(ModelMap modelMap) {
+        /*AppUser user = appUserService.findBy("username","zhangsan");*/
+        String askid = "c0f71baa4f45459b818fea769c88bebc";
+        Map user = new HashMap<>();
+        user.put("username","zhangsan");
+        user.put("askid",askid);
+        modelMap.addAttribute("user", user);
+        System.out.println("mod");
+        return new ModelAndView("/chat", modelMap);
+    }
+
+    // chat
+    @GetMapping("/chats")
+    public ModelAndView chatspage(ModelMap modelMap) {
+        /*AppUser user = appUserService.findBy("username","zhangsan");*/
+        String askid = "c0f71baa4f45459b818fea769c88bebc";
+        Map user = new HashMap<>();
+        user.put("username","zhangsan");
+        user.put("askid",askid);
+        modelMap.addAttribute("user", user);
+        System.out.println("mod");
+        return new ModelAndView("/chats", modelMap);
+    }
+
 
 
     /**
