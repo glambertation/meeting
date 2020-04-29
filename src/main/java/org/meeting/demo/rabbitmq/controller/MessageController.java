@@ -28,7 +28,7 @@ public class MessageController {
 	public void senderMsg(String msg) {
 		System.out.println("send");
 		dsender.sendDirect(msg);
-		dsender2.sendDirect();
+		dsender2.sendDirect(msg);
 	}
 	
 	@GetMapping(path="/sendTopic")

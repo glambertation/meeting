@@ -10,12 +10,11 @@ public class DirectSender2 {
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
 	
-	public void sendDirect() {
-		for(int i=0;i<5;i++) {
-			String msg = "direct msg22 "+i;
-			System.out.println("Sender2发送的消息： "+msg);
-			rabbitTemplate.convertAndSend("directExchange2", "rabbit.msg1", msg);
-		}
+	public void sendDirect(String msg) {
+
+		System.out.println("Sender2发送的消息： "+msg);
+		rabbitTemplate.convertAndSend("taskExchange2", "rabbit.task", msg);
+
 	}
 	
 }

@@ -1,3 +1,4 @@
+
 package org.meeting.demo.rabbitmq.model;
 
 import java.util.Date;
@@ -49,3 +50,4 @@ public class ChatMsg {
         this.date = date;
     }
 }
+

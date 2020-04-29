@@ -1,12 +1,22 @@
 package org.meeting.demo.business;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.meeting.demo.core.Result;
 import org.meeting.demo.core.ResultGenerator;
 import org.meeting.demo.model.*;
+import org.meeting.demo.rabbitmq.direct.DirectSender2;
+/*import org.meeting.demo.rabbitmq.model.ChatMsg;*/
+import java.security.Principal;
+
+/*import org.meeting.demo.rabbitmq.model.ChatMsg;*/
 import org.meeting.demo.service.*;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Condition;
 
@@ -35,6 +45,8 @@ public class AskForHelp {
     private MachinenumberService machinenumberService;
     @Resource
     private MachinezoneService machinezoneService;
+    @Resource
+    private ChatmsgService chatmsgService;
 
     Logger logger = LoggerFactory.getLogger(AskForHelp.class);
 
@@ -125,7 +137,8 @@ public class AskForHelp {
         Map data = new HashMap();
 
         // 生成uuid
-        String uuid = getUUID();
+        /*String uuid = getUUID();*/
+        String uuid = (String) helpinfo.get("roomToken");
 
         // 获取求助人信息
         Askerinfo asker_info = new Askerinfo();
@@ -193,20 +206,56 @@ public class AskForHelp {
         return ResultGenerator.genSuccessResult(data);
     }
 
-    // 事件处理 - 任务发布
+    public String getCurrentUsername() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        }
+        if (principal instanceof Principal) {
+            return ((Principal) principal).getName();
+        }
+        return String.valueOf(principal);
+    }
+
+    @Autowired
+    private DirectSender2 dsender2;
     @GetMapping("/handle_event")
     public Result handleevent(@RequestParam Map<String, Object> helpinfo){
+
+        System.out.println("helpinfo");
+        System.out.println(helpinfo);
+        if(helpinfo.size() == 0){
+            helpinfo = new HashMap();
+            helpinfo.put("handle_result", "此处有乘客吸烟导致行李失火。请速去现场解决，并与中控室保持联系，感谢配合");
+            helpinfo.put("handle_person", "zhangsan,lisi");
+            helpinfo.put("ask_id", "1");
+            helpinfo.put("handle", "1");
+
+        }
+
+        System.out.println("helpinfo");
+        System.out.println(JSON.toJSONString(helpinfo));
         Map data = new HashMap();
 
         // 任务分配：选择列表+发送消息
-        Map task = new HashMap();
+        Chatmsg chatmsg = new Chatmsg();
+        chatmsg.setType("task");
+        chatmsg.setContent((String) helpinfo.get("handle_result"));
+        chatmsg.setDate(new Date().toString());
+        chatmsg.setToid((String) helpinfo.get("handle_person"));
+        chatmsg.setFromid(getCurrentUsername());
+
+        chatmsgService.save(chatmsg);
+        /*Map task = new HashMap();
         task.put("handle_result", (String) helpinfo.get("handle_result"));
         task.put("handle_person", (String) helpinfo.get("handle_person"));
+        task.put("type", "send_task");*/
         // todo
+        dsender2.sendDirect(JSON.toJSONString(chatmsg));
         /*websock发送即时消息*/
         /*ws.task();*/
 
-        logger.info("调用[AskForHelp/handle_event] 任务分配：选择列表+发送消息，任务为 [{}]",task.toString());
+        logger.info("调用[AskForHelp/handle_event] 任务分配：选择列表+发送消息，任务为 [{}]",chatmsg.toString());
 
         // 存储处理结果+存储处理人员+标注该求助已处理
         Eventhandle event_handle = new Eventhandle();
@@ -231,6 +280,40 @@ public class AskForHelp {
         // 生成返回结果
         data.put("update_event_handle", get_event_handle); //update完的处理信息
         data.put("ask_queue", ask_queue); //求助队列
+
+        return ResultGenerator.genSuccessResult(data);
+    }
+
+    // 事件处理 - 事件上报
+    @GetMapping("/poll_msg")
+    public Result poll_msg(@RequestParam Map<String, Object> userinfo ) {
+        String username = null;
+        int page = 0;
+        int size = 0;
+        if(userinfo.size() == 0){
+            username = "lisi";
+            page = 1;
+            size = 5;
+
+        }
+        Map data = new HashMap();
+        List<Chatmsg> chatmsgs = null;
+        if(username != null && !username.equals("")){
+            Condition condition = new Condition(Chatmsg.class);
+            condition.createCriteria().andLike("toid", '%'+username+'%');
+            chatmsgs = chatmsgService.findByCondition(condition);
+
+            logger.info("调用[AskForHelp/chatmsgs] 轮询取用户消息，结果为 [{}]",chatmsgs.toString());
+        }
+
+        PageHelper.startPage(page, size);
+
+        PageInfo pageInfo = new PageInfo(chatmsgs);
+        // 生成返回结果
+        data.put("chatmsgs", chatmsgs); //update完的处理信息
+        data.put("pageInfo", pageInfo); //update完的处理信息
+        data.put("username", username); //update完的处理信息
+        data.put("count", chatmsgs.size()); //update完的处理信息
 
         return ResultGenerator.genSuccessResult(data);
     }

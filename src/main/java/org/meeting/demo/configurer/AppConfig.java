@@ -11,7 +11,7 @@ public class AppConfig {
 	private static String routingKey = "rabbit.msg";
 	private static String routingKey2 = "rabbit.msg.others";
 	private static String routingKey3 = "rabbit.user.others";
-    private static String zhangsan = "zhangsan";
+    private static String taskKey = "rabbit.task";
     private static String lisi = "lisi";
 
 	@Bean
@@ -27,6 +27,11 @@ public class AppConfig {
 	@Bean
 	public Queue directQueue() {
 		return new Queue("direct", false);
+	}
+
+	@Bean
+	public Queue taskQueue() {
+		return new Queue("task", false);
 	}
 	
 	@Bean
@@ -56,6 +61,11 @@ public class AppConfig {
 	public DirectExchange directExchange2() {
 		return new DirectExchange("directExchange2", false, false);
 	}
+
+	@Bean
+	public DirectExchange taskExchange2() {
+		return new DirectExchange("taskExchange2", false, false);
+	}
 	
 	@Bean
 	public TopicExchange topicExchange2() {
@@ -70,6 +80,11 @@ public class AppConfig {
 	@Bean
 	public Binding binding() {
 		return BindingBuilder.bind(directQueue()).to(directExchange2()).with(routingKey);
+	}
+
+	@Bean
+	public Binding bindtaskQueue() {
+		return BindingBuilder.bind(taskQueue()).to(taskExchange2()).with(taskKey);
 	}
 
 /*    @Bean
