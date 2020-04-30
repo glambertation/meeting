@@ -1,7 +1,8 @@
 
 package org.meeting.demo.service;
-import org.meeting.demo.model.Machinezone;
+
 import org.meeting.demo.core.Service;
+import org.meeting.demo.model.Machinezone;
 
 
 /**

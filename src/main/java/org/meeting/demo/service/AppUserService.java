@@ -1,10 +1,9 @@
 
 package org.meeting.demo.service;
-import org.meeting.demo.model.AppUser;
+
 import org.meeting.demo.core.Service;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.meeting.demo.model.AppUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 
 /**

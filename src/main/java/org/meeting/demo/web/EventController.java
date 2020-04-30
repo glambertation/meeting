@@ -1,8 +1,8 @@
 package org.meeting.demo.web;
 import org.meeting.demo.core.Result;
 import org.meeting.demo.core.ResultGenerator;
-import org.meeting.demo.model.Askqueue;
-import org.meeting.demo.service.AskqueueService;
+import org.meeting.demo.model.Event;
+import org.meeting.demo.service.EventService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,42 +14,42 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
-* Created by CodeGenerator on 2020/03/29.
+* Created by CodeGenerator on 2020/04/30.
 */
 @RestController
-@RequestMapping("/askqueue")
-public class AskqueueController {
+@RequestMapping("/event")
+public class EventController {
 @Resource
-private AskqueueService askqueueService;
+private EventService eventService;
 
 @PostMapping("/add")
-public Result add(Askqueue askqueue) {
-askqueueService.save(askqueue);
+public Result add(Event event) {
+eventService.save(event);
 return ResultGenerator.genSuccessResult();
 }
 
 @PostMapping("/delete")
 public Result delete(@RequestParam Integer id) {
-askqueueService.deleteById(id);
+eventService.deleteById(id);
 return ResultGenerator.genSuccessResult();
 }
 
 @PostMapping("/update")
-public Result update(Askqueue askqueue) {
-askqueueService.update(askqueue);
+public Result update(Event event) {
+eventService.update(event);
 return ResultGenerator.genSuccessResult();
 }
 
 @PostMapping("/detail")
 public Result detail(@RequestParam Integer id) {
-Askqueue askqueue = askqueueService.findById(id);
-return ResultGenerator.genSuccessResult(askqueue);
+Event event = eventService.findById(id);
+return ResultGenerator.genSuccessResult(event);
 }
 
 @PostMapping("/list")
 public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
 PageHelper.startPage(page, size);
-List<Askqueue> list = askqueueService.findAll();
+List<Event> list = eventService.findAll();
 PageInfo pageInfo = new PageInfo(list);
 return ResultGenerator.genSuccessResult(pageInfo);
 }

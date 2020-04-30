@@ -28,28 +28,36 @@ public class DirectReceive {
             // 新增求助事件
             // 设备信息，人员信息
             // 事件号 - 房间号算了。。
+            String ask_id = chatmsg.getContent().replace("user_createroom","");
+            if(!ask_id.equals("undefined")){
+
+            }
             System.out.println("Receive1接受的消息： "+"user_createroom");
 
         }
 
         if(type != null && type.equals("user_hangup")){
             // 对应的事件号
+            String ask_id = chatmsg.getContent().replace("user_hangup","");
             System.out.println("Receive1接受的消息： "+"user_hangup");
         }
 
         if(type != null && type.equals("admin_join")){
             // 求助事件号
             // 处理人信息
+            String ask_id = chatmsg.getContent().replace("admin_join","");
             System.out.println("Receive1接受的消息： "+"admin_join");
         }
 
         if(type != null && type.equals("admin_hangup")){
             // 求助事件号
+            String ask_id = chatmsg.getContent().replace("admin_hangup","");
             System.out.println("Receive1接受的消息： "+"admin_hangup");
         }
 
         if(type != null && type.equals("admin_pause")){
             // 求助事件号
+            String ask_id = chatmsg.getContent().replace("admin_pause","");
             System.out.println("Receive1接受的消息： "+"admin_pause");
         }
 

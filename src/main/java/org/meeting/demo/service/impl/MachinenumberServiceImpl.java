@@ -1,9 +1,9 @@
 package org.meeting.demo.service.impl;
 
+import org.meeting.demo.core.AbstractService;
 import org.meeting.demo.dao.MachinenumberMapper;
 import org.meeting.demo.model.Machinenumber;
 import org.meeting.demo.service.MachinenumberService;
-import org.meeting.demo.core.AbstractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

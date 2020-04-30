@@ -1,21 +1,18 @@
 package org.meeting.demo.service.impl;
 
+import org.meeting.demo.core.AbstractService;
 import org.meeting.demo.core.ResultGenerator;
 import org.meeting.demo.dao.AppUserMapper;
 import org.meeting.demo.model.AppUser;
 import org.meeting.demo.service.AppUserService;
-import org.meeting.demo.core.AbstractService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;

@@ -1,7 +1,8 @@
 
 package org.meeting.demo.service;
-import org.meeting.demo.model.Chatmsg;
+
 import org.meeting.demo.core.Service;
+import org.meeting.demo.model.Chatmsg;
 
 
 /**

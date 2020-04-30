@@ -1,10 +1,5 @@
 package org.meeting.demo.model;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-
 import javax.persistence.*;
 
 @Table(name = "app_user")

@@ -23,7 +23,7 @@ public class WebSocket {
     private static int onlineCount = 0;
 
     //concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。若要实现服务端与单一客户端通信的话，可以使用Map来存放，其中Key可以为用户标识
-    private static CopyOnWriteArraySet<Map<String,WebSocket>> webSocketSet = new CopyOnWriteArraySet<Map<String,WebSocket>>();
+    private static CopyOnWriteArraySet<Map<String, WebSocket>> webSocketSet = new CopyOnWriteArraySet<Map<String, WebSocket>>();
 
     //与某个客户端的连接会话，需要通过它来给客户端发送数据
     private Session session;
@@ -38,7 +38,7 @@ public class WebSocket {
     public void onOpen(Session session) throws EncodeException, IOException{
         System.out.println("打开 on open");
         this.session = session;
-        Map<String,WebSocket> map = new HashMap<String,WebSocket>();
+        Map<String, WebSocket> map = new HashMap<String, WebSocket>();
         String name = "";
         Map<String, List<String>> listMap = session.getRequestParameterMap();
         // 非主播建立连接
@@ -60,9 +60,9 @@ public class WebSocket {
     }
 
     // 添加map 到 webSocketSet，
-    public void addSocket(Map<String,WebSocket> map, String name) {
+    public void addSocket(Map<String, WebSocket> map, String name) {
         // 删除重复的连接
-        for(Map<String,WebSocket> item: webSocketSet){
+        for(Map<String, WebSocket> item: webSocketSet){
             for(String key : item.keySet()){
                 if (key.toString().equals(name)) {
                     webSocketSet.remove(item);
@@ -82,7 +82,7 @@ public class WebSocket {
     @OnClose
     public void onClose(){
         System.out.println("关闭 on close");
-        for (Map<String,WebSocket> item : webSocketSet) {
+        for (Map<String, WebSocket> item : webSocketSet) {
             for(String key : item.keySet()){
                 if(item.get(key) == this){
                     // 删除关闭的连接
@@ -110,7 +110,7 @@ public class WebSocket {
         System.out.println("onMessage");
         System.out.println("receiver");
         System.out.println(receiver);
-        for(Map<String,WebSocket> item: webSocketSet){
+        for(Map<String, WebSocket> item: webSocketSet){
             for(String key : item.keySet()){
                 if (key.toString().equals(receiver.toString())) {
                     WebSocket webSocket = item.get(key);

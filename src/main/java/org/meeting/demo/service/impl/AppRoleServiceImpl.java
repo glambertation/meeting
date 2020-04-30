@@ -1,9 +1,9 @@
 package org.meeting.demo.service.impl;
 
+import org.meeting.demo.core.AbstractService;
 import org.meeting.demo.dao.AppRoleMapper;
 import org.meeting.demo.model.AppRole;
 import org.meeting.demo.service.AppRoleService;
-import org.meeting.demo.core.AbstractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

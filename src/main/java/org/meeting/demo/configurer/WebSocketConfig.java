@@ -1,4 +1,4 @@
-/*
+package org.meeting.demo.configurer;/*
 package org.meeting.demo.configurer;
 
 import org.springframework.context.annotation.Bean;
