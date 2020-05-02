@@ -26,6 +26,7 @@
 	}
 	websocket.onmessage=function(e){
 		console.log(e,'websocket收到消息');
+		alert(e.data);
 		document.getElementById('msgs').innerHTML = document.getElementById('msgs').innerHTML+'<br/>'+e.data+"on mess";
 	}
 	websocket.onerror = function (event) {

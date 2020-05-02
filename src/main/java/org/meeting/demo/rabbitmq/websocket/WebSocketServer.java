@@ -1,23 +1,31 @@
 
 package org.meeting.demo.rabbitmq.websocket;
 
+import com.alibaba.druid.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @ServerEndpoint(value="/webSocket")
 @Component
 public class WebSocketServer {
 
+
+
 	private Session session;
 	public static CopyOnWriteArraySet<WebSocketServer> webSockets = new CopyOnWriteArraySet<WebSocketServer>();
-	
+
 	@OnOpen
 	public void onOpen(Session session) throws InterruptedException {
 		this.session = session;

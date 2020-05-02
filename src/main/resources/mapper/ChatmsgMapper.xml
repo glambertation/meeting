@@ -11,5 +11,6 @@
     <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="date" jdbcType="VARCHAR" property="date" />
     <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
   </resultMap>
 </mapper>

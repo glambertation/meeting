@@ -284,6 +284,7 @@ public class AskForHelp {
     }
 
     // 个人消息 - 轮询接口
+    // 这个迁移到business/notification/list 接口
     @GetMapping("/poll_msg")
     public Result poll_msg(@RequestParam Map<String, Object> userinfo ) {
         String username = null;

@@ -1,8 +1,6 @@
 package org.meeting.demo.model;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 public class Chatmsg {
     /**
@@ -36,6 +34,11 @@ public class Chatmsg {
      * 类型
      */
     private String type;
+
+    /**
+     * 状态
+     */
+    private String status;
 
     /**
      * 获取主键ID
@@ -143,5 +146,23 @@ public class Chatmsg {
      */
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * 获取状态
+     *
+     * @return status - 状态
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * 设置状态
+     *
+     * @param status 状态
+     */
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

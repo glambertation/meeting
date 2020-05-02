@@ -14,7 +14,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
-* Created by CodeGenerator on 2020/04/29.
+* Created by CodeGenerator on 2020/05/02.
 */
 @RestController
 @RequestMapping("/chatmsg")
