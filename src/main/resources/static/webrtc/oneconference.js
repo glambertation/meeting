@@ -1,6 +1,3 @@
-// Muaz Khan         - www.MuazKhan.com
-// MIT License       - www.WebRTC-Experiment.com/licence
-// Experiments       - github.com/muaz-khan/WebRTC-Experiment
 
 // This library is known as multi-user connectivity wrapper!
 // It handles connectivity tasks to make sure two or more users can interconnect!
@@ -500,7 +497,7 @@ var conference = function(config) {
             console.log("_config", _config)
             self.roomName = _config.roomName || '随机会议室';
             self.roomToken = uniqueToken();
-            config.joinroomToken = uniqueToken();
+            config.joinroomToken = self.roomToken;
 
             isbroadcaster = true;
             isGetNewRoom = true;

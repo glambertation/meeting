@@ -21,13 +21,13 @@ import javax.servlet.http.HttpSession;
 @EnableWebSocketMessageBroker
 public class WebSocketsConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
-    @Autowired
-    private WebSocketMessageBrokerStats webSocketMessageBrokerStats;
+    /*@Autowired
+    private WebSocketMessageBrokerStats webSocketMessageBrokerStats;*/
 
-    @PostConstruct
+    /*@PostConstruct
     public void init() {
         webSocketMessageBrokerStats.setLoggingPeriod(10 * 100000); // desired time in millis
-    }
+    }*/
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {

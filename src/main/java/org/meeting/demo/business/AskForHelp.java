@@ -7,6 +7,8 @@ import org.meeting.demo.core.Result;
 import org.meeting.demo.core.ResultGenerator;
 import org.meeting.demo.model.*;
 import org.meeting.demo.rabbitmq.direct.DirectSender2;
+
+import java.io.IOException;
 import java.security.Principal;
 
 import org.meeting.demo.service.*;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Condition;
 
 import org.slf4j.LoggerFactory;
@@ -176,8 +179,7 @@ public class AskForHelp {
         Event event = eventService.findBy("askid", uuid);
 
         // 获取人员信息
-        String success = (String) helpinfo.get("success");
-        String pause = (String) helpinfo.get("pause");
+
         String handle = (String) helpinfo.get("handle");
         String username = (String) helpinfo.get("username");
         String handle_result = (String) helpinfo.get("handle_result");
@@ -186,10 +188,7 @@ public class AskForHelp {
         String report_people = (String) helpinfo.get("report_people");
         String remark = (String) helpinfo.get("remark");
 
-        if(success != null)
-            event.setIdentity(success);
-        if(pause != null)
-            event.setIdentity(pause);
+
         if(handle != null)
             event.setIdentity(handle);
         if(username != null)
@@ -317,6 +316,16 @@ public class AskForHelp {
 
         return ResultGenerator.genSuccessResult(data);
     }
+
+   /* *//*群聊文件上传*//*
+    @PostMapping("/import")
+    public Result importData(MultipartFile file) throws IOException {
+        List<Employee> list = POIUtils.excel2Employee(file, nationService.getAllNations(), politicsstatusService.getAllPoliticsstatus(), departmentService.getAllDepartmentsWithOutChildren(), positionService.getAllPositions(), jobLevelService.getAllJobLevels());
+        if (employeeService.addEmps(list) == list.size()) {
+            return RespBean.ok("上传成功");
+        }
+        return RespBean.error("上传失败");
+    }*/
 
 
 

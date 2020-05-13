@@ -12,9 +12,13 @@ import org.meeting.demo.core.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -101,7 +105,27 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     public void addCorsMappings(CorsRegistry registry) {
         //registry.addMapping("/**");
         registry.addMapping("/**")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD");
+                .allowedOrigins("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
+                .allowCredentials(true)
+                .allowedHeaders("*");
+    }
+
+    private CorsConfiguration addcorsConfig() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        List<String> list = new ArrayList<>();
+        list.add("*");
+        corsConfiguration.setAllowedOrigins(list);
+        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
+        return corsConfiguration;
+    }
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", addcorsConfig());
+        return new CorsFilter(source);
     }
 
     //添加拦截器

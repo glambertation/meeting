@@ -1,9 +1,4 @@
-﻿<!--
-> Muaz Khan       - wwww.MuazKhan.com
-> MIT License     - www.WebRTC-Experiment.com/licence
-> Documentation   - github.com/muaz-khan/WebRTC-Experiment/tree/master/video-conferencing
--->
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>WebRTC Video Conferencing</title>
@@ -18,15 +13,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <#--<link rel="author" type="text/html" href="https://plus.google.com/+MuazKhan">
-    <meta name="author" content="Muaz Khan">-->
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <#--<meta name="title" content="Video Conferencing" />
-    <meta name="description" content="Video Conferencing using WebRTC." />
-    <meta name="keywords" content="WebRTC, Video Conferencing, Demo, Example, Experiment" />-->
-
-    <#--<link rel="stylesheet" href="https://www.webrtc-experiment.com/style.css">-->
     <link rel="stylesheet" href="../webrtc/style.css">
 
     <style>
@@ -71,18 +59,9 @@
         document.createElement('footer');
     </script>
 
-    <!-- script used to stylize video element -->
-    <#--<script src="https://www.webrtc-experiment.com/getMediaElement.min.js"> </script>
-
-    <script src="https://www.webrtc-experiment.com/socket.io.js"> </script>
-    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-    <script src="https://www.webrtc-experiment.com/IceServersHandler.js"></script>
-    <script src="https://www.webrtc-experiment.com/CodecsHandler.js"></script>-->
-    <#--<script src="https://www.webrtc-experiment.com/RTCPeerConnection-v1.5.js"> </script>-->
-   <#-- <script src="https://www.webrtc-experiment.com/video-conferencing/conference.js"> </script>-->
     <script src="../webrtc/getMediaElement.min.js"> </script>
-    <script src="https://localhost:9559/socket.io/socket.io.js"></script>
-    <#--<script src="../webrtc/socket.io.js"> </script>-->
+    <#--<script src="https://localhost:9559/socket.io/socket.io.js"></script>-->
+    <script src="../webrtc/socket.io.js"> </script>
     <script src="../webrtc/adapter-latest.js"></script>
     <script src="../webrtc/IceServersHandler.js"></script>
     <script src="../webrtc/CodecsHandler.js"></script>
@@ -105,9 +84,6 @@
 
     </header>
 
-    <#--<div class="github-stargazers"></div>-->
-
-    <!-- just copy this <section> and next script -->
     <section class="experiment">
         <section>
                     <span>
@@ -136,20 +112,34 @@
         <div id="videos-container"></div>
     </section>
 
+
+
     <script>
-        // Muaz Khan     - https://github.com/muaz-khan
-        // MIT License   - https://www.webrtc-experiment.com/licence/
-        // Documentation - https://github.com/muaz-khan/WebRTC-Experiment/tree/master/video-conferencing
+
+        $(function(){
+            browserRedirect()
+        });
+        function browserRedirect() {
+            var sUserAgent = navigator.userAgent.toLowerCase();
+            var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";
+            var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";
+            var bIsMidp = sUserAgent.match(/midp/i) == "midp";
+            var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";
+            var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";
+            var bIsAndroid = sUserAgent.match(/android/i) == "android";
+            var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";
+            var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
+            if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
+                alert('移动端设备')
+            } else {
+                alert('pc端设备')
+            }
+        }
 
         var config = {
-            // via: https://github.com/muaz-khan/WebRTC-Experiment/tree/master/socketio-over-nodejs
             openSocket: function(config) {
-                // var SIGNALING_SERVER = 'https://socketio-over-nodejs2.herokuapp.com:443/';
-
-                // var SIGNALING_SERVER = 'https://localhost:5447';
 
                 var SIGNALING_SERVER = 'https://localhost:9559/';
-
 
                 /*config.channel = config.channel || location.href.replace(/\/|:|#|%|\.|\[|\]/g, '');*/
                 config.channel = config.channel || "zhebushimeng";
@@ -304,16 +294,6 @@
                     /*joinButton.parentNode.parentNode.parentNode.parentNode.removeChild(joinButton.parentNode.parentNode.parentNode);*/
                     joinButton.parentNode.parentNode.parentNode.removeChild(joinButton.parentNode.parentNode);
                 }
-               /* var joinVideo = document.querySelector('button[data-roomToken="' + room.roomToken + '"]');
-                if (joinButton) {
-                    // joinButton.parentNode === <li>
-                    // joinButton.parentNode.parentNode === <td>
-                    // joinButton.parentNode.parentNode.parentNode === <tr>
-                    // joinButton.parentNode.parentNode.parentNode.parentNode === <table>
-                    console.log("remove video node", joinButton.parentNode.parentNode.parentNode)
-                    /!*joinButton.parentNode.parentNode.parentNode.parentNode.removeChild(joinButton.parentNode.parentNode.parentNode);*!/
-                    joinButton.parentNode.parentNode.parentNode.removeChild(joinButton.parentNode.parentNode);
-                }*/
             },
             onReady: function() {
                 console.log('now you can open or join rooms');
@@ -521,9 +501,5 @@
 
     </script>
 
-
-<!-- commits.js is useless for you! -->
-<#--<script src="https://www.webrtc-experiment.com/commits.js" async> </script>-->
-    <script src="../webrtc/commits.js" async> </script>
 </body>
 </html>

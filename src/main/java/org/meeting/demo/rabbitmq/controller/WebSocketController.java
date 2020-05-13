@@ -60,7 +60,8 @@ public class WebSocketController {
 
         ChatMsg chatmsg = new ChatMsg();
         chatmsg.setContent(msg);
-        chatmsg.setFrom(principal.getName());
+        // todo
+        // chatmsg.setFrom(principal.getName());
         chatmsg.setTo("lisi");
         chatmsg.setDate(new Date());
         if(msg.indexOf("user_createroom") != -1)
@@ -73,6 +74,18 @@ public class WebSocketController {
             chatmsg.setType("admin_hangup");
         if(msg.indexOf("admin_pause") != -1)
             chatmsg.setType("admin_pause");
+
+        /*群聊*/
+        if(msg.indexOf("sendtext") != -1)
+            chatmsg.setType("sendtext");
+
+        /*多v多 建会议室*/
+        if(msg.indexOf("create_meeting") != -1)
+            chatmsg.setType("create_meeting");
+        if(msg.indexOf("invite_meeting") != -1)
+            chatmsg.setType("invite_meeting");
+        if(msg.indexOf("join_meeting") != -1)
+            chatmsg.setType("join_meeting");
 
 
         // chatmsg.json();

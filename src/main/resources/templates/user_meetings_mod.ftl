@@ -1,8 +1,4 @@
-﻿<!--
-> Muaz Khan       - wwww.MuazKhan.com
-> MIT License     - www.WebRTC-Experiment.com/licence
-> Documentation   - github.com/muaz-khan/WebRTC-Experiment/tree/master/video-conferencing
--->
+﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,13 +14,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <#--<link rel="author" type="text/html" href="https://plus.google.com/+MuazKhan">
-    <meta name="author" content="Muaz Khan">-->
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <#--<meta name="title" content="Video Conferencing" />
-    <meta name="description" content="Video Conferencing using WebRTC." />
-    <meta name="keywords" content="WebRTC, Video Conferencing, Demo, Example, Experiment" />-->
 
     <link rel="stylesheet" href="https://www.webrtc-experiment.com/style.css">
 
@@ -92,9 +84,7 @@
 
     </header>
 
-    <#--<div class="github-stargazers"></div>-->
 
-    <!-- just copy this <section> and next script -->
     <section class="experiment">
         <section>
                     <span>
@@ -121,9 +111,6 @@
     </section>
 
     <script>
-        // Muaz Khan     - https://github.com/muaz-khan
-        // MIT License   - https://www.webrtc-experiment.com/licence/
-        // Documentation - https://github.com/muaz-khan/WebRTC-Experiment/tree/master/video-conferencing
 
         var config = {
             // via: https://github.com/muaz-khan/WebRTC-Experiment/tree/master/socketio-over-nodejs
@@ -132,7 +119,9 @@
 
                 // var SIGNALING_SERVER = 'https://localhost:5447';
 
-                var SIGNALING_SERVER = 'https://localhost:9559/';
+                // var SIGNALING_SERVER = 'https://172.20.10.3:9559/';
+
+                var SIGNALING_SERVER = 'https://10.3.23.154:9559/';
 
 
                 config.channel = config.channel || location.href.replace(/\/|:|#|%|\.|\[|\]/g, '');
@@ -416,6 +405,6 @@
 
 
 <!-- commits.js is useless for you! -->
-<script src="https://www.webrtc-experiment.com/commits.js" async> </script>
+<#--<script src="https://www.webrtc-experiment.com/commits.js" async> </script>-->
 </body>
 </html>

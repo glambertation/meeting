@@ -1,2 +1,327 @@
-// https://www.webrtc-experiment.com/commits-dev.js
-!function(){function e(e){return String(e).replace(/(\d)(?=(\d{3})+$)/g,"$1,")}function a(e,a){var t=document.createElement("script");t.src=e+"?callback=callback00",t.async=!0,a&&(t.onload=a),document.body.appendChild(t)}function t(e,t){window.gType=e,(m=document.createElement("span")).className="github-btn",(p=document.createElement("a")).target="_blank",p.className="gh-btn",m.appendChild(p);var r=document.createElement("span");r.className="gh-ico",p.appendChild(r),(h=document.createElement("span")).className="gh-text",p.appendChild(h),(i=document.createElement("a")).target="_blank",i.className="gh-count",i.innerHTML="+1K",m.appendChild(i),s&&s.appendChild(m),p.href="https://github.com/"+o+"/","watch"==gType?(m.className+=" github-watchers",h.innerHTML="Star ",i.href="https://github.com/"+o+"/stargazers"):"fork"==gType?(m.className+=" github-forks",h.innerHTML=" Fork ",i.href="https://github.com/"+o+"/network/members"):"follow"==gType&&(m.className+=" github-me",h.innerHTML="Follow @muaz-khan",p.href="https://github.com/muaz-khan",i.href="https://github.com/muaz-khan/followers"),"follow"==gType?a("https://api.github.com/users/muaz-khan",t):a("https://api.github.com/repos/"+o,t)}function r(e){if(d){var a=document.createElement("script");a.src="https://api.github.com/repos/"+o+"/issues?sha=master&callback=issuesCallback",a.async=!0,e&&(a.onload=e),document.body.appendChild(a)}else e&&e()}function n(e){var a=document.createElement("script");a.src="https://api.github.com/repos/"+o+"/commits?sha=master&callback=commitsCallback",a.async=!0,!e&&d&&(e=r),e&&(a.onload=e),document.body.appendChild(a)}function c(e,a){var t=e-a;return t<6e4?Math.round(t/1e3)+" seconds ago":t<36e5?Math.round(t/6e4)+" minutes ago":t<864e5?Math.round(t/36e5)+" hours ago":t<2592e6?Math.round(t/864e5)+" days ago":t<31536e6?Math.round(t/2592e6)+" months ago":Math.round(t/31536e6)+" years ago"}function l(e){return e=e.replace(/```javascript([^```]+)```|```html([^```]+)```/g,"<pre>$1</pre>"),e=e.replace(/```JavaScript([^```]+)```|```html([^```]+)```/g,"<pre>$1</pre>"),e=e.replace(/```js([^```]+)```|```html([^```]+)```/g,"<pre>$1</pre>"),e=e.replace(/```([^```]+)```/g,"<pre>$1</pre>"),e=e.replace(/``([^``]+)``/g,"<pre>$1</pre>"),e=e.replace(/`([^`]+)`/g,"<code>$1</code>"),e=e.replace(/\*\*([^\*\*]+)\*\*/g,"<strong>$1</strong>"),e=e.replace(/#([0-9]+)/g,'<a href="https://github.com/'+o+'/issues/$1" target="_blank">#$1</a>'),e=e.replace(/```([^```]+)```/g,"<pre>$1</pre>"),e=e.replace(/`([^`]+)`/g,"<code>$1</code>")}var o=window.useThisGithubPath||"muaz-khan/WebRTC-Experiment",s=document.querySelector(".github-stargazers");window.callback00=function(a){"watch"==gType?i.innerHTML=e(a.data.watchers):"fork"==gType?i.innerHTML=e(a.data.forks):"follow"==gType&&(i.innerHTML=e(a.data.followers)),i.style.display="block"};var m,i,h,p;t("watch",function(){var e;u?e=n:d&&(e=r),t("fork",function(){e?e(function(){t("follow",function(){e!=r&&d&&r()})}):t("follow",function(){e!=r&&d&&r()})})});var d=document.getElementById("github-issues");d&&(d.innerHTML='<div style="padding:1em .8em;">Getting latest issues...</div>'),window.issuesCallback=function(e){d.innerHTML="";var a=(e=e.data).length;a>2&&(a=2);for(var t=0;t<a;t++){var r=e[t],n=document.createElement("div");n.className="commit";var o=r.title;o.length>50?(o=o.substr(0,49)+"...",o='<h2 title="'+r.title+'"><a href="'+r.html_url+'">'+o+"</a></h2><br />"):o='<h2><a href="'+r.html_url+'">'+r.title+"</a></h2><br />";var s=r.body;(s=(s=l(s=o+(s=(s=(s=s.replace(/</g,"&lt;").replace(/>/g,"&gt;")).replace(b,g)).replace(/\n/g," ")))).replace(/  /g,"")).length>250&&(s=s.substr(0,249)+"...");var m=document.createElement("div");m.className="commit-desc",m.innerHTML=s,n.appendChild(m);var i=document.createElement("div");i.className="commit-meta";var h=document.createElement("a");h.target="_blank",h.href=r.html_url,h.className="commit-url",h.innerHTML=r.comments+" Comments (Submitted "+c(new Date,new Date(r.created_at))+")",i.appendChild(h);var p=document.createElement("div");p.className="authorship";var u=new Image(24,24);u.className="gravatar",r.user&&r.user.avatar_url&&(u.src=r.user.avatar_url),p.appendChild(u);var v=document.createElement("span");v.className="author-name",v.innerHTML='<a href="'+r.user.html_url+'" rel="author" target="_blank">'+r.user.login+"</a>",p.appendChild(v),i.appendChild(p),n.appendChild(i),d&&d.appendChild(n)}};var u=document.getElementById("github-commits");u&&(u.innerHTML='<div style="padding:1em .8em;">Getting latest commits...</div>'),window.commitsCallback=function(e){u.innerHTML="";var a=(e=e.data).length;a>2&&(a=2);for(var t=0;t<a;t++){var r=e[t],n=document.createElement("div");n.className="commit";var o=r.commit.message;o=l(o=(o=(o=o.replace(/</g,"&lt;").replace(/>/g,"&gt;")).replace(b,g).replace(/\n/g,"<br />")).replace(/\n/g,"<br />"));var s=document.createElement("div");s.className="commit-desc",s.innerHTML=o,n.appendChild(s);var m=document.createElement("div");m.className="commit-meta";var i=document.createElement("a");i.target="_blank",i.href=r.html_url,i.className="commit-url",i.innerHTML=c(new Date,new Date(r.commit.committer.date)),m.appendChild(i);var h=document.createElement("div");h.className="authorship",r.author||(r.author="muaz-khan");var p=new Image(24,24);p.className="gravatar",p.src=r.author.avatar_url,r.author&&r.author.avatar_url||(p.src="https://goo.gl/KaFpuL"),h.appendChild(p);var d=document.createElement("span");d.className="author-name",d.innerHTML='<a href="'+(r.author.html_url||"https://github.com/muaz-khan")+'" rel="author" target="_blank">'+(r.author.login||"Muaz Khan")+"</a>",h.appendChild(d),m.appendChild(h),n.appendChild(m),u&&u.appendChild(n)}};var g=function(e,a,t,r,n,c,l,o,s){"("==e.charAt(0)&&")"==e.charAt(e.length-1)&&(e=e.slice(1,-1)),a||(e="http://"+e);var m=t.replace(/www\./gi,""),i=m+(n||"")+(c||"")+(l||"")+(o||"")+(s||"");return i.length>18&&m.length<18&&(i=i.slice(0,m.length+(18-m.length))+"..."),'<a href="'+e+'" target="_blank">'+i.replace("webrtc-experiment.com/","/").replace("rtcmulticonnection.org/","/").replace("recordrtc.org/","/")+"</a>"},b=/\(?\b(?:(http|https|ftp):\/\/)?((?:www.)?[a-zA-Z0-9\-\.]+[\.][a-zA-Z]{2,4})(?::(\d*))?(?=[\s\/,\.\)])([\/]{1}[^\s\?]*[\/]{1})*(?:\/?([^\s\n\?\[\]\{\}\#]*(?:(?=\.)){1}|[^\s\n\?\[\]\{\}\.\#]*)?([\.]{1}[^\s\?\#]*)?)?(?:\?{1}([^\s\n\#\[\]\(\)]*))?([\#][^\s\n]*)?\)?/gi;!function(){var e=document.createElement("script");e.src="https://www.webrtc-experiment.com/common.js",e.async=!0,document.body.appendChild(e)}()}();
+(function() {
+    var repositoryURL = window.useThisGithubPath || 'muaz-khan/WebRTC-Experiment';
+
+    // forks & stargazers
+    var stargazers = document.querySelector('.github-stargazers');
+
+    function addCommas(n) {
+        return String(n).replace(/(\d)(?=(\d{3})+$)/g, '$1,')
+    }
+
+    function jsonp(path, callback) {
+        var script = document.createElement('script');
+        script.src = path + '?callback=callback00';
+        script.async = true;
+        if(callback) script.onload = callback;
+        document.body.appendChild(script);
+    }
+
+    window.callback00 = function (obj) {
+        if (gType == 'watch') {
+            counter.innerHTML = addCommas(obj.data.watchers);
+        } else if (gType == 'fork') {
+            counter.innerHTML = addCommas(obj.data.forks);
+        } else if (gType == 'follow') {
+            counter.innerHTML = addCommas(obj.data.followers);
+        }
+
+        counter.style.display = 'block';
+    }
+
+    var mainButton, counter, text, button;
+
+    function gitinfo(type, callback) {
+        window.gType = type;
+
+        mainButton = document.createElement('span');
+        mainButton.className = 'github-btn';
+
+        button = document.createElement('a');
+        button.target = '_blank';
+        button.className = 'gh-btn';
+        mainButton.appendChild(button);
+
+        var ghico = document.createElement('span');
+        ghico.className = 'gh-ico';
+        button.appendChild(ghico);
+
+        text = document.createElement('span');
+        text.className = 'gh-text';
+        button.appendChild(text);
+
+        counter = document.createElement('a');
+        counter.target = '_blank';
+        counter.className = 'gh-count';
+        counter.innerHTML = '+1K';
+        mainButton.appendChild(counter);
+
+        if(stargazers) stargazers.appendChild(mainButton);
+
+        // Set href to be URL for
+        button.href = 'https://github.com/' + repositoryURL + '/';
+
+        // Add the class, change the text label, set count link href
+        if (gType == 'watch') {
+            mainButton.className += ' github-watchers';
+            text.innerHTML = 'Star ';
+            counter.href = 'https://github.com/' + repositoryURL + '/stargazers';
+        } else if (gType == 'fork') {
+            mainButton.className += ' github-forks';
+            text.innerHTML = ' Fork ';
+            counter.href = 'https://github.com/' + repositoryURL + '/network/members';
+        } else if (gType == 'follow') {
+            mainButton.className += ' github-me';
+            text.innerHTML = 'Follow @muaz-khan';
+            button.href = 'https://github.com/muaz-khan';
+            counter.href = 'https://github.com/muaz-khan/followers';
+        }
+
+        if (gType == 'follow') {
+            jsonp('https://api.github.com/users/muaz-khan', callback);
+        } else {
+            jsonp('https://api.github.com/repos/' + repositoryURL, callback);
+        }
+    }
+
+    gitinfo('watch', function () {
+        var callback;
+        if(githubCommits) callback = getLatestCommits;
+        else if(githubIssues) callback = getLatestIssues;
+
+        gitinfo('fork', function() {
+            if(callback) callback(function() {
+                gitinfo('follow', function() {
+                    if(callback != getLatestIssues && githubIssues) getLatestIssues();
+                });
+            });
+            else gitinfo('follow', function() {
+                if(callback != getLatestIssues && githubIssues) getLatestIssues();
+            });
+        });
+    });
+
+    // issues
+    var githubIssues = document.getElementById('github-issues');
+    if(githubIssues) githubIssues.innerHTML = '<div style="padding:1em .8em;">Getting latest issues...</div>';
+
+    window.issuesCallback = function (data) {
+        githubIssues.innerHTML = '';
+        data = data.data;
+        var length = data.length;
+        if (length > 2) length = 2;
+        for (var i = 0; i < length; i++) {
+            var issue = data[i];
+            var div = document.createElement('div');
+            div.className = 'commit';
+
+            var header = issue.title;
+            if (header.length > 50) {
+                header = header.substr(0, 49) + '...';
+                header = '<h2 title="' + issue.title + '"><a href="'+issue.html_url+'">' + header + '</a></h2><br />';
+            } else header = '<h2><a href="' + issue.html_url + '">' + issue.title + '</a></h2><br />';
+
+            var message = issue.body;
+
+            message = message.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            // message = message.replace(/https?:\/\/.*\.(?:png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)/g,'<img src="$&"/>');
+            message = message.replace(urlRegex, shortenUrl);
+            message = message.replace(/\n/g, ' ');
+            message = header + message;
+
+            message = replaceMarkup(message);
+
+            message = message.replace(/  /g, '');
+            if (message.length > 250) {
+                message = message.substr(0, 249) + '...';
+            }
+
+            var commitDesc = document.createElement('div');
+            commitDesc.className = 'commit-desc';
+            commitDesc.innerHTML = message;
+            div.appendChild(commitDesc);
+
+            var commitMeta = document.createElement('div');
+            commitMeta.className = 'commit-meta';
+
+            var commitURL = document.createElement('a');
+            commitURL.target = '_blank';
+            commitURL.href = issue.html_url;
+            commitURL.className = 'commit-url';
+            commitURL.innerHTML = issue.comments + ' Comments (Submitted ' + timeDifference(new Date(), new Date(issue.created_at)) + ')';
+
+            commitMeta.appendChild(commitURL);
+
+            var authorship = document.createElement('div');
+            authorship.className = 'authorship';
+
+            var image = new Image(24, 24);
+            image.className = 'gravatar';
+            if(issue.user && issue.user.avatar_url) image.src = issue.user.avatar_url;
+            authorship.appendChild(image);
+
+            var span = document.createElement('span');
+            span.className = 'author-name';
+            span.innerHTML = '<a href="' + issue.user.html_url + '" rel="author" target="_blank">' + issue.user.login + '</a>';
+            authorship.appendChild(span);
+
+            commitMeta.appendChild(authorship);
+            div.appendChild(commitMeta);
+
+            if(githubIssues) githubIssues.appendChild(div);
+        }
+    };
+
+    function getLatestIssues(callback) {
+        if(!githubIssues) {
+            if(callback) callback();
+            return;
+        }
+
+        var script = document.createElement('script');
+        script.src = 'https://api.github.com/repos/' + repositoryURL + '/issues?sha=master&callback=issuesCallback';
+        script.async = true;
+        if(callback) script.onload = callback;
+        document.body.appendChild(script);
+    }
+
+    var githubCommits = document.getElementById('github-commits');
+    if(githubCommits) githubCommits.innerHTML = '<div style="padding:1em .8em;">Getting latest commits...</div>';
+
+    window.commitsCallback = function (data) {
+        githubCommits.innerHTML = '';
+
+        data = data.data;
+
+        var length = data.length;
+        if (length > 2) length = 2;
+        for (var i = 0; i < length; i++) {
+            var commit = data[i];
+            var div = document.createElement('div');
+            div.className = 'commit';
+
+            var message = commit.commit.message;
+            message = message.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            // message = message.replace(/https?:\/\/.*\.(?:png|jpg|jpeg|gif|PNG|JPG|JPEG|GIF)/i,'<img src="$&">');
+            message = message.replace(urlRegex, shortenUrl).replace(/\n/g, '<br />');
+            message = message.replace(/\n/g, '<br />');
+
+            message = replaceMarkup(message);
+
+            var commitDesc = document.createElement('div');
+            commitDesc.className = 'commit-desc';
+            commitDesc.innerHTML = message;
+            div.appendChild(commitDesc);
+
+            var commitMeta = document.createElement('div');
+            commitMeta.className = 'commit-meta';
+
+            var commitURL = document.createElement('a');
+            commitURL.target = '_blank';
+            commitURL.href = commit.html_url;
+            commitURL.className = 'commit-url';
+            commitURL.innerHTML = timeDifference(new Date(), new Date(commit.commit.committer.date));
+            commitMeta.appendChild(commitURL);
+
+            var authorship = document.createElement('div');
+            authorship.className = 'authorship';
+
+            if(!commit.author) commit.author = 'muaz-khan';
+
+            var image = new Image(24, 24);
+            image.className = 'gravatar';
+            image.src = commit.author.avatar_url;
+            if(!commit.author || !commit.author.avatar_url) image.src = 'https://goo.gl/KaFpuL';
+            authorship.appendChild(image);
+
+            var span = document.createElement('span');
+            span.className = 'author-name';
+            span.innerHTML = '<a href="' + (commit.author.html_url || 'https://github.com/muaz-khan') + '" rel="author" target="_blank">' + (commit.author.login || 'Muaz Khan') + '</a>';
+            authorship.appendChild(span);
+
+            commitMeta.appendChild(authorship);
+            div.appendChild(commitMeta);
+
+            if(githubCommits) githubCommits.appendChild(div);
+        }
+    };
+
+    function getLatestCommits(callback) {
+        var script2 = document.createElement('script');
+        script2.src = 'https://api.github.com/repos/' + repositoryURL + '/commits?sha=master&callback=commitsCallback';
+        script2.async = true;
+
+        if(!callback && githubIssues) callback = getLatestIssues;
+
+        if(callback) script2.onload = callback;
+        document.body.appendChild(script2);
+    }
+
+    var shortenUrl = function (url, protocol, host, port, path, filename, ext, query, fragment) {
+        var limit = 18;
+        if (url.charAt(0) == '(' && url.charAt(url.length - 1) == ')') {
+            url = url.slice(1, -1);
+        }
+        if (!protocol) {
+            url = 'http://' + url;
+        }
+        var domain = host.replace(/www\./gi, '');
+        var visibleUrl = domain + (path || '') + (filename || '') + (ext || '') + (query || '') + (fragment || '');
+        if (visibleUrl.length > limit && domain.length < limit) {
+            visibleUrl = visibleUrl.slice(0, domain.length + (limit - domain.length)) + '...';
+        }
+        return '<a href="' + url + '" target="_blank">' + visibleUrl.replace('webrtc-experiment.com/', '/').replace('rtcmulticonnection.org/', '/').replace('recordrtc.org/', '/')  + '</a>';
+    };
+
+    var urlRegex = /\(?\b(?:(http|https|ftp):\/\/)?((?:www.)?[a-zA-Z0-9\-\.]+[\.][a-zA-Z]{2,4})(?::(\d*))?(?=[\s\/,\.\)])([\/]{1}[^\s\?]*[\/]{1})*(?:\/?([^\s\n\?\[\]\{\}\#]*(?:(?=\.)){1}|[^\s\n\?\[\]\{\}\.\#]*)?([\.]{1}[^\s\?\#]*)?)?(?:\?{1}([^\s\n\#\[\]\(\)]*))?([\#][^\s\n]*)?\)?/gi;
+
+    function timeDifference(current, previous) {
+
+        var msPerMinute = 60 * 1000;
+        var msPerHour = msPerMinute * 60;
+        var msPerDay = msPerHour * 24;
+        var msPerMonth = msPerDay * 30;
+        var msPerYear = msPerDay * 365;
+
+        var elapsed = current - previous;
+
+        if (elapsed < msPerMinute) {
+            return Math.round(elapsed / 1000) + ' seconds ago';
+        } else if (elapsed < msPerHour) {
+            return Math.round(elapsed / msPerMinute) + ' minutes ago';
+        } else if (elapsed < msPerDay) {
+            return Math.round(elapsed / msPerHour) + ' hours ago';
+        } else if (elapsed < msPerMonth) {
+            return Math.round(elapsed / msPerDay) + ' days ago';
+        } else if (elapsed < msPerYear) {
+            return Math.round(elapsed / msPerMonth) + ' months ago';
+        } else {
+            return Math.round(elapsed / msPerYear) + ' years ago';
+        }
+    }
+
+    function replaceMarkup(message) {
+        message = message.replace(/```javascript([^```]+)```|```html([^```]+)```/g, '<pre>$1</pre>');
+        message = message.replace(/```JavaScript([^```]+)```|```html([^```]+)```/g, '<pre>$1</pre>');
+        message = message.replace(/```js([^```]+)```|```html([^```]+)```/g, '<pre>$1</pre>');
+        message = message.replace(/```([^```]+)```/g, '<pre>$1</pre>');
+        message = message.replace(/``([^``]+)``/g, '<pre>$1</pre>');
+        message = message.replace(/`([^`]+)`/g, '<code>$1</code>');
+        message = message.replace(/\*\*([^\*\*]+)\*\*/g, '<strong>$1</strong>');
+        message = message.replace(/#([0-9]+)/g, '<a href="https://github.com/' + repositoryURL + '/issues/$1" target="_blank">#$1</a>');
+
+        message = message.replace(/```([^```]+)```/g, '<pre>$1</pre>');
+        message = message.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+        return message;
+    }
+
+
+    function getCommonjs() {
+        var script3 = document.createElement('script');
+        script3.src = 'https://cdn.webrtc-experiment.com/common.js';
+        script3.async = true;
+        document.body.appendChild(script3);
+    }
+
+    getCommonjs();
+})();

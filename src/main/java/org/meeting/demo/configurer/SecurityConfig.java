@@ -38,8 +38,8 @@ import java.util.Map;
  */
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    AppUserService appUserService;
+    /*@Autowired
+    AppUserService appUserService;*/
     /*@Autowired
     CustomFilterInvocationSecurityMetadataSource customFilterInvocationSecurityMetadataSource;
     @Autowired
@@ -70,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/css/**","/js/**","/index.html", "/templates/**", "/static/**","/msg.html","/img/**","/fonts/**","/favicon.ico","/verifyCode");
+        web.ignoring().antMatchers("/css/**","/js/**","/**", "/index.html", "/templates/**", "/static/**","/msg.html","/img/**","/fonts/**","/favicon.ico","/verifyCode");
     }
 
 /*    @Override

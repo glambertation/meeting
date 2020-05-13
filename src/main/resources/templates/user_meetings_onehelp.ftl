@@ -1,8 +1,4 @@
-﻿<!--
-> Muaz Khan       - wwww.MuazKhan.com
-> MIT License     - www.WebRTC-Experiment.com/licence
-> Documentation   - github.com/muaz-khan/WebRTC-Experiment/tree/master/video-conferencing
--->
+﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,15 +14,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <#--<link rel="author" type="text/html" href="https://plus.google.com/+MuazKhan">
-    <meta name="author" content="Muaz Khan">-->
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-    <#--<meta name="title" content="Video Conferencing" />
-    <meta name="description" content="Video Conferencing using WebRTC." />
-    <meta name="keywords" content="WebRTC, Video Conferencing, Demo, Example, Experiment" />-->
-
-    <#--<link rel="stylesheet" href="https://www.webrtc-experiment.com/style.css">-->
     <link rel="stylesheet" href="../webrtc/style.css">
 
     <style>
@@ -71,18 +59,10 @@
         document.createElement('footer');
     </script>
 
-    <!-- script used to stylize video element -->
-    <#--<script src="https://www.webrtc-experiment.com/getMediaElement.min.js"> </script>
 
-    <script src="https://www.webrtc-experiment.com/socket.io.js"> </script>
-    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-    <script src="https://www.webrtc-experiment.com/IceServersHandler.js"></script>
-    <script src="https://www.webrtc-experiment.com/CodecsHandler.js"></script>-->
-    <#--<script src="https://www.webrtc-experiment.com/RTCPeerConnection-v1.5.js"> </script>-->
-    <#-- <script src="https://www.webrtc-experiment.com/video-conferencing/conference.js"> </script>-->
     <script src="../webrtc/getMediaElement.min.js"> </script>
-    <script src="https://localhost:9559/socket.io/socket.io.js"></script>
-    <#--<script src="../webrtc/socket.io.js"> </script>-->
+    <#--<script src="https://localhost:9559/socket.io/socket.io.js"></script>-->
+    <script src="../webrtc/socket.io.js"> </script>
     <script src="../webrtc/adapter-latest.js"></script>
     <script src="../webrtc/IceServersHandler.js"></script>
     <script src="../webrtc/CodecsHandler.js"></script>
@@ -104,9 +84,7 @@
 
     </header>
 
-    <#--<div class="github-stargazers"></div>-->
 
-    <!-- just copy this <section> and next script -->
     <section class="experiment">
         <section>
                     <span>
@@ -129,19 +107,11 @@
     </section>
 
     <script>
-        // Muaz Khan     - https://github.com/muaz-khan
-        // MIT License   - https://www.webrtc-experiment.com/licence/
-        // Documentation - https://github.com/muaz-khan/WebRTC-Experiment/tree/master/video-conferencing
 
         var config = {
-            // via: https://github.com/muaz-khan/WebRTC-Experiment/tree/master/socketio-over-nodejs
             openSocket: function(config) {
-                // var SIGNALING_SERVER = 'https://socketio-over-nodejs2.herokuapp.com:443/';
-
-                // var SIGNALING_SERVER = 'https://localhost:5447';
 
                 var SIGNALING_SERVER = 'https://localhost:9559/';
-
 
                 /*config.channel = config.channel || location.href.replace(/\/|:|#|%|\.|\[|\]/g, '');*/
                 config.channel = config.channel || "zhebushimeng";
@@ -238,43 +208,6 @@
             },
             onRoomFound: function(room) {
                 console.log("onRoomFound", room)
-                /*var alreadyExist = document.querySelector('button[data-broadcaster="' + room.broadcaster + '"]');
-                console.log("alreadyExist", alreadyExist);
-                if (alreadyExist) return;
-                /!*if (!alreadyExist) {
-                    document.getElementById('conference-name').remove();
-                    btnSetupNewRoom.remove();
-                }*!/
-                console.log("roomsList", roomsList);
-                if (typeof roomsList === 'undefined') roomsList = document.body;
-
-                var tr = document.createElement('tr');
-                tr.innerHTML = '<td><strong>' + room.roomName + '</strong> 发起求助电话!</td>' +
-                    '<td><button class="join">接通</button></td>';
-                roomsList.appendChild(tr);
-
-                var joinRoomButton = tr.querySelector('.join');
-                joinRoomButton.setAttribute('data-broadcaster', room.broadcaster);
-                joinRoomButton.setAttribute('data-roomToken', room.roomToken);
-                joinRoomButton.onclick = function() {
-                    this.disabled = true;
-
-                    var broadcaster = this.getAttribute('data-broadcaster');
-                    var roomToken = this.getAttribute('data-roomToken');
-                    console.log("joinroom roomtoken", roomToken);
-                    console.log("joinroom broadcaster", broadcaster);
-                    captureUserMedia(function() {
-                        conferenceUI.joinRoom({
-                            roomToken: roomToken,
-                            joinUser: broadcaster
-                        });
-                        /!*document.getElementById('rooms-list').remove();*!/
-                        /!*btnLeaveRoom.removeAttribute("hidden");*!/
-                    }, function() {
-                        joinRoomButton.disabled = false;
-
-                    });
-                };*/
             },
             onRoomClosed: function(room) {
                 console.log("room close");
@@ -333,11 +266,6 @@
             stomp.send("/chat",{},"user_hangup"+config.joinroomToken);
             conferenceUI.leaveRoom()
             console.log("离开房间");
-
-            /*setTimeout(function(){
-                window.location.href="about:blank";
-                window.close();
-            }, 3000);*/
 
         }
 
@@ -441,9 +369,5 @@
 
     </script>
 
-
-    <!-- commits.js is useless for you! -->
-    <#--<script src="https://www.webrtc-experiment.com/commits.js" async> </script>-->
-    <script src="../webrtc/commits.js" async> </script>
 </body>
 </html>

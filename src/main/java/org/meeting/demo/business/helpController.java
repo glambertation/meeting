@@ -79,6 +79,32 @@ public class helpController {
         return new ModelAndView("/user_meetings_onehelp", modelMap);
     }
 
+    // 修改后的多对多
+    @GetMapping("/indexmore")
+    public ModelAndView indexmore(ModelMap modelMap) {
+        /*AppUser user = appUserService.findBy("username","zhangsan");*/
+        String askid = "c0f71baa4f45459b818fea769c88bebc";
+        Map user = new HashMap<>();
+        user.put("username","zhangsan");
+        user.put("askid",askid);
+        modelMap.addAttribute("user", user);
+        System.out.println("mod");
+        return new ModelAndView("/index", modelMap);
+    }
+
+    // 修改后的多对多
+    @GetMapping("/indexans")
+    public ModelAndView indexans(ModelMap modelMap) {
+        /*AppUser user = appUserService.findBy("username","zhangsan");*/
+        String askid = "c0f71baa4f45459b818fea769c88bebc";
+        Map user = new HashMap<>();
+        user.put("username","zhangsan");
+        user.put("askid",askid);
+        modelMap.addAttribute("user", user);
+        System.out.println("mod");
+        return new ModelAndView("/index2", modelMap);
+    }
+
     // chat
     @GetMapping("/chat")
     public ModelAndView chatpage(ModelMap modelMap) {

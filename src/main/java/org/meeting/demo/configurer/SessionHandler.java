@@ -27,7 +27,7 @@ public class SessionHandler {
         scheduler.scheduleAtFixedRate(() -> {
             System.out.println("\nregistered users: " + sessionMap.size());
             sessionMap.keySet().forEach(k -> System.out.println(k));
-        }, 10, 10, TimeUnit.SECONDS);
+        }, 100, 100, TimeUnit.SECONDS);
 
         // removing users by time
 //        scheduler.scheduleAtFixedRate(() -> {
